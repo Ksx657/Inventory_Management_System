@@ -1,5 +1,5 @@
 
-import User from "../models/User.js";
+import User from "../models/userSchema.js";
 import OverallStat from "../models/OverallStat.js";
 import Transaction from "../models/Transaction.js";
 

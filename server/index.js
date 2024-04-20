@@ -10,10 +10,12 @@ import clientRoutes from "./routes/client.js";
 import generalRoutes from "./routes/general.js";
 import managementRoutes from "./routes/management.js";
 import salesRoutes from "./routes/sales.js";
-import productRoutes from "./routes/product.js";
+import productRoutes from "./routes/product.route.js";
+import userRouter from "./routes/userRouter.js";
+
 
 // data imports
-import User from "./models/User.js";
+import User from "./models/userSchema.js";
 import Product from "./models/Product.js";
 import ProductStat from "./models/ProductStat.js";
 import Transaction from "./models/Transaction.js";
@@ -48,6 +50,7 @@ app.use("/general", generalRoutes);
 app.use("/management", managementRoutes);
 app.use("/sales", salesRoutes);
 app.use('/products', productRoutes);
+app.use("/users", userRouter);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 9000;
