@@ -9,7 +9,7 @@ import Dashboard from "./scenes/dashboard";
 import Products from "./scenes/products";
 import Customers from "./scenes/customers";
 import Transactions from "./scenes/transactions";
-import TaskManager from "./scenes/taskmanager";
+import TaskManager from "./scenes/geography";
 import Overview from "./scenes/overview";
 import Daily from "./scenes/daily";
 import Monthly from "./scenes//monthly";
