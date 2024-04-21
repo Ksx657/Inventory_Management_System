@@ -1,10 +1,11 @@
 
 import React, { useState } from "react";
-import { Box, useTheme } from "@mui/material";
+import { Box, useTheme,Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { useGetTransactionsQuery } from "../../state/api.js";
 import Header from "../../components/Header.jsx";
 import DataGridCustomToolbar from "../../components/DataGridCustomToolbar.jsx";
+import { Link } from "react-router-dom"; 
 
 const Transactions = () => {
   const theme = useTheme();
@@ -30,8 +31,8 @@ const Transactions = () => {
       flex: 1,
     },
     {
-      field: "userId",
-      headerName: "User ID",
+      field: "customerId",
+      headerName: "Customer ID",
       flex: 1,
     },
     {
@@ -40,8 +41,8 @@ const Transactions = () => {
       flex: 1,
     },
     {
-      field: "products",
-      headerName: "# of Products",
+      field: "quantity",
+      headerName: "Quantity",
       flex: 0.5,
       sortable: false,
       renderCell: (params) => params.value.length,
@@ -57,6 +58,25 @@ const Transactions = () => {
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="TRANSACTIONS" subtitle="Entire list of transactions" />
+      <Link to="/addtransaction">
+        <Button
+          variant="contained"
+          sx={{
+            color: "white",
+            backgroundColor: "#21295c",
+            fontSize: "1.2rem",
+            fontWeight: "bold",
+            padding: "1rem 2rem",
+            mb: "2rem",
+            mt: "2rem",
+            ":hover": {
+              backgroundColor: "#191F45",
+            },
+          }}
+        >
+          +Add Transaction
+        </Button>
+      </Link>
       <Box
         height="80vh"
         sx={{

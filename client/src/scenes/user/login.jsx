@@ -49,7 +49,7 @@ const Login = () => {
           variant="h3"
           sx={{
             textAlign: "center",
-            color: theme.palette.neutral.main,
+            color: theme.palette.secondary.light,
             marginBottom: "2rem",
           }}
         >

@@ -4,22 +4,23 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const AddTransaction = () => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [transId, setTransId] = useState("");
+  const [customerId, setCustomerId] = useState("");
+  const [transDate, setTransDate] = useState("");
+  const [transQuantity, setTransQuantity] = useState("");
+  const [transCost, setTransCost] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // handle sign up submission here
+    // Handle adding product to the database here
 
-    // After successful sign up, redirect to dashboard
-    navigate("/dashboard");
+    // After successful addition, redirect to dashboard or products page
+    navigate("/customers"); // Change this to the appropriate route
   };
 
   return (
@@ -48,7 +49,7 @@ const Register = () => {
             marginBottom: "2rem",
           }}
         >
-          Sign Up
+          Add Transaction
         </Typography>
         <form onSubmit={handleSubmit}>
           <Box
@@ -59,32 +60,37 @@ const Register = () => {
             }}
           >
             <TextField
-              label="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              label="ID"
+              value={transId}
+              onChange={(e) => setTransId(e.target.value)}
               fullWidth
               required
             />
             <TextField
-              label="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              label="Customer ID"
+              value={customerId}
+              onChange={(e) => setCustomerId(e.target.value)}
               fullWidth
               required
             />
             <TextField
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              label="Created At"
+              value={transDate}
+              onChange={(e) => setTransDate(e.target.value)}
               fullWidth
               required
             />
             <TextField
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              label="Quantity"
+              value={transQuantity}
+              onChange={(e) => setTransQuantity(e.target.value)}
+              fullWidth
+              required
+            />
+            <TextField
+              label="Cost"
+              value={transCost}
+              onChange={(e) => setTransCost(e.target.value)}
               fullWidth
               required
             />
@@ -107,7 +113,7 @@ const Register = () => {
                 fontSize: "1rem",
               }}
             >
-              Sign Up
+              Add Transaction
             </Button>
           </Box>
         </form>
@@ -116,4 +122,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default AddTransaction;

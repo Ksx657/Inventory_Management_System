@@ -6,7 +6,7 @@ import Header from "../../components/Header.jsx";
 import { ResponsiveChoropleth } from "@nivo/geo";
 import { geoData } from "../../state/geoData.js";
 
-const Geography = () => {
+const TaskManager = () => {
   const theme = useTheme();
   const { data } = useGetGeographyQuery();
 
@@ -100,4 +100,4 @@ const Geography = () => {
   );
 };
 
-export default Geography;
+export default TaskManager;
