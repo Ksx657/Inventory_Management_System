@@ -20,12 +20,12 @@ import {
   ShoppingCartOutlined,
   Groups2Outlined,
   ReceiptLongOutlined,
-  PublicOutlined,
+  AssignmentOutlined,
   PointOfSaleOutlined,
   TodayOutlined,
   CalendarMonthOutlined,
   AdminPanelSettingsOutlined,
-  TrendingUpOutlined,
+ 
   PieChartOutlined,
 } from "@mui/icons-material";
 import { useEffect, useState } from "react";
@@ -54,10 +54,7 @@ const navItems = [
     text: "Transactions",
     icon: <ReceiptLongOutlined />,
   },
-  {
-    text: "Geography",
-    icon: <PublicOutlined />,
-  },
+  
   {
     text: "Sales",
     icon: null,
@@ -87,8 +84,8 @@ const navItems = [
     icon: <AdminPanelSettingsOutlined />,
   },
   {
-    text: "Performance",
-    icon: <TrendingUpOutlined />,
+    text: "Task Manager",
+    icon: <AssignmentOutlined />,
   },
 ];
 
@@ -193,7 +190,7 @@ const Sidebar = ({
             </List>
           </Box>
 
-          <Box position="relative" bottom="2rem" top="2rem">
+          <Box position="relative" bottom="2rem" top="1rem">
             <Divider />
             <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0 3rem">
               <Box

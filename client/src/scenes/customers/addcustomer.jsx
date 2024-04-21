@@ -4,22 +4,23 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const AddCustomer = () => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [customerId, setCustomerId] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [customerAddress, setCustomerAddress] = useState("");
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerPhoneno, setCustomerPhoneno] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // handle sign up submission here
+    // Handle adding product to the database here
 
-    // After successful sign up, redirect to dashboard
-    navigate("/dashboard");
+    // After successful addition, redirect to dashboard or products page
+    navigate("/customers"); // Change this to the appropriate route
   };
 
   return (
@@ -44,11 +45,11 @@ const Register = () => {
           variant="h3"
           sx={{
             textAlign: "center",
-            color: theme.palette.secondary.light,
+            color:theme.palette.secondary.light,
             marginBottom: "2rem",
           }}
         >
-          Sign Up
+          Add Customer
         </Typography>
         <form onSubmit={handleSubmit}>
           <Box
@@ -59,32 +60,37 @@ const Register = () => {
             }}
           >
             <TextField
-              label="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              label="Customer ID"
+              value={customerId}
+              onChange={(e) => setCustomerId(e.target.value)}
               fullWidth
               required
             />
             <TextField
-              label="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
+              label="Customer Name"
+              value={customerName}
+              onChange={(e) => setCustomerName(e.target.value)}
               fullWidth
               required
             />
             <TextField
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              label="Customer Address"
+              value={customerAddress}
+              onChange={(e) => setCustomerAddress(e.target.value)}
               fullWidth
               required
             />
             <TextField
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              label="Customer Email"
+              value={customerEmail}
+              onChange={(e) => setCustomerEmail(e.target.value)}
+              fullWidth
+              required
+            />
+            <TextField
+              label="Customer Phone Number"
+              value={customerPhoneno}
+              onChange={(e) => setCustomerPhoneno(e.target.value)}
               fullWidth
               required
             />
@@ -107,7 +113,7 @@ const Register = () => {
                 fontSize: "1rem",
               }}
             >
-              Sign Up
+              Add Product
             </Button>
           </Box>
         </form>
@@ -116,4 +122,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default AddCustomer;

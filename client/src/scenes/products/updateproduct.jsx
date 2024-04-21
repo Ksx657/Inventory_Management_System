@@ -1,25 +1,26 @@
 import React, { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { Box, Button, Container, TextField, Typography, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Register = () => {
+const UpdateProduct = () => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // Sample product IDs, replace this with actual product IDs fetched from the database
+  const productIds = ["1", "2", "3"];
+
+  const [productId, setProductId] = useState("");
+  const [quantity, setQuantity] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // handle sign up submission here
+    // Handle updating product quantity in the database here
 
-    // After successful sign up, redirect to dashboard
-    navigate("/dashboard");
+    // After successful update, redirect to dashboard or products page
+    navigate("/products"); // Change this to the appropriate route
   };
 
   return (
@@ -48,7 +49,7 @@ const Register = () => {
             marginBottom: "2rem",
           }}
         >
-          Sign Up
+          Update Product
         </Typography>
         <form onSubmit={handleSubmit}>
           <Box
@@ -59,32 +60,24 @@ const Register = () => {
             }}
           >
             <TextField
-              label="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              select
+              label="Product ID"
+              value={productId}
+              onChange={(e) => setProductId(e.target.value)}
               fullWidth
               required
-            />
+            >
+              {productIds.map((id) => (
+                <MenuItem key={id} value={id}>
+                  {id}
+                </MenuItem>
+              ))}
+            </TextField>
             <TextField
-              label="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              fullWidth
-              required
-            />
-            <TextField
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              fullWidth
-              required
-            />
-            <TextField
-              label="Password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              label="Quantity"
+              type="number"
+              value={quantity}
+              onChange={(e) => setQuantity(e.target.value)}
               fullWidth
               required
             />
@@ -107,7 +100,7 @@ const Register = () => {
                 fontSize: "1rem",
               }}
             >
-              Sign Up
+              Update Product
             </Button>
           </Box>
         </form>
@@ -116,4 +109,4 @@ const Register = () => {
   );
 };
 
-export default Register;
+export default UpdateProduct;
