@@ -2,24 +2,54 @@ import React, { useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom"
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const Register = () => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
 
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  // const [firstName, setFirstName] = useState("");
+  // const [lastName, setLastName] = useState("");
+  // const [email, setEmail] = useState("");
+  // const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    role: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // handle sign up submission here
 
-    // After successful sign up, redirect to dashboard
-    navigate("/dashboard");
+    try {
+      const response = await axios.post("http://localhost:5001/users/register", formData);
+
+      if (response.status === 200) {
+        toast.success("Registration successful! Redirecting to login...");
+        setTimeout(() => navigate("/login"), 2000); // Redirect to the login page
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response && error.response.data
+          ? error.response.data.message
+          : "An error occurred during registration. Please try again.";
+      toast.error(errorMessage);
+    }
   };
 
   return (
@@ -59,32 +89,43 @@ const Register = () => {
             }}
           >
             <TextField
-              label="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
+              name="name"
+              label="Name"
+              value={formData.name}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
-              label="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              fullWidth
-              required
-            />
-            <TextField
+              name="email"
               label="Email"
               type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.email}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
+              name="phone"
+              label="Phone"
+              value={formData.phone}
+              onChange={handleChange}
+              fullWidth
+            />
+            <TextField
+              name="role"
+              label="Role"
+              value={formData.role}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+            <TextField
+              name="password"
               label="Password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
               fullWidth
               required
             />

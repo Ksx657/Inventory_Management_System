@@ -4,8 +4,8 @@ import User from "../models/userSchema.js";
 import { sendToken } from "../utils/jwtToken.js";
 
 export const register = catchAsyncErrors(async (req, res, next) => {
-  const { name, email, password, phone, role, education } = req.body;
-  if (!name || !email || !password || !phone || !role || !education) {
+  const { name, email, password, phone, role} = req.body;
+  if (!name || !email || !password || !phone || !role ) {
     return next(new ErrorHandler("Please fill full details!", 400));
   }
   let user = await User.findOne({ email });
@@ -19,7 +19,6 @@ export const register = catchAsyncErrors(async (req, res, next) => {
     password,
     phone,
     role,
-    education,
   });
   sendToken(user, 200, "User registered successfully", res);
 });
