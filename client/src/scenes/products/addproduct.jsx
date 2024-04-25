@@ -3,23 +3,51 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import toast from 'react-hot-toast';
+import axios from "axios";
 
 const AddProduct = () => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
+  
 
-  const [productId, setProductId] = useState("");
-  const [productName, setProductName] = useState("");
-  const [productPrice, setProductPrice] = useState("");
+  const [formData, setFormData] = useState({
+    productId: "",
+    productName: "",
+    productPrice: "",
+    
+    category: "",
+    rating: "",
+    
+    quantity: ""
+  });
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Handle adding product to the database here
-
-    // After successful addition, redirect to dashboard or products page
-    navigate("/products"); // Change this to the appropriate route
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:5001/products/", formData);
+
+      if (response.status === 201) {
+        // Show success message
+        toast.success("Product added successfully!");
+        // Redirect to products page
+        navigate("/products");
+      }
+    } catch (error) {
+      // Show error message
+      toast.error("An error occurred while adding the product. Please try again.");
+    }
+  };
+
 
   return (
     <Container
@@ -58,26 +86,55 @@ const AddProduct = () => {
             }}
           >
             <TextField
+              name="productId"
               label="Product ID"
-              value={productId}
-              onChange={(e) => setProductId(e.target.value)}
+              value={formData.productId} // Fixed value reference
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
-              label="Product Name"
-              value={productName}
-              onChange={(e) => setProductName(e.target.value)}
+              name="productName"
+              label="Name"
+              value={formData.productName} // Fixed value reference
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
-              label="Product Price"
+              name="productPrice"
+              label="Price(per KG)"
               type="number"
-              value={productPrice}
-              onChange={(e) => setProductPrice(e.target.value)}
+              value={formData.productPrice} // Fixed value reference
+              onChange={handleChange}
               fullWidth
               required
+            />
+            
+            <TextField
+              name="category"
+              label="Category"
+              value={formData.category}
+              onChange={handleChange}
+              fullWidth
+              
+            />
+            <TextField
+              name="rating"
+              label="Rating"
+              type="number"
+              value={formData.rating}
+              onChange={handleChange}
+              fullWidth
+            />
+            
+            <TextField
+              name="quantity"
+              label="Quantity(KG)"
+              type="number"
+              value={formData.quantity}
+              onChange={handleChange}
+              fullWidth
             />
           </Box>
           <Box

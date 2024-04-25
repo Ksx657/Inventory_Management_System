@@ -1,26 +1,41 @@
 import React, { useState } from "react";
-import { useTheme } from "@mui/material/styles";
-import useMediaQuery from "@mui/material/useMediaQuery";
-import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { useTheme, useMediaQuery, Button, TextField, Container, Box, Typography, CircularProgress } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { useAddTransactionMutation } from "../../state/api"; // Import the generated mutation hook from the API file
 
 const AddTransaction = () => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
 
-  const [transId, setTransId] = useState("");
-  const [customerId, setCustomerId] = useState("");
-  const [transDate, setTransDate] = useState("");
-  const [transQuantity, setTransQuantity] = useState("");
-  const [transCost, setTransCost] = useState("");
+  const [formData, setFormData] = useState({
+    customerId: "",
+    createdAt: "",
+    quantity: "",
+    cost: "",
+  });
 
-  const handleSubmit = (e) => {
+  const [addTransaction, { isLoading }] = useAddTransactionMutation(); // Use the generated mutation hook
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle adding product to the database here
 
-    // After successful addition, redirect to dashboard or products page
-    navigate("/customers"); // Change this to the appropriate route
+    try {
+      // Call the addTransaction mutation function with the formData
+      const { data } = await addTransaction(formData);
+
+      // Assuming the response status is not used, you can navigate immediately
+      navigate("/transactions");
+    } catch (error) {
+      console.error("An error occurred while adding the transaction. Please try again.", error);
+    }
   };
 
   return (
@@ -60,37 +75,37 @@ const AddTransaction = () => {
             }}
           >
             <TextField
-              label="ID"
-              value={transId}
-              onChange={(e) => setTransId(e.target.value)}
-              fullWidth
-              required
-            />
-            <TextField
+              name="customerId"
               label="Customer ID"
-              value={customerId}
-              onChange={(e) => setCustomerId(e.target.value)}
+              value={formData.customerId}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
+              name="createdAt"
               label="Created At"
-              value={transDate}
-              onChange={(e) => setTransDate(e.target.value)}
+              type="date"
+              value={formData.createdAt}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
+              name="quantity"
               label="Quantity"
-              value={transQuantity}
-              onChange={(e) => setTransQuantity(e.target.value)}
+              type="number"
+              value={formData.quantity}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
+              name="cost"
               label="Cost"
-              value={transCost}
-              onChange={(e) => setTransCost(e.target.value)}
+              type="number"
+              value={formData.cost}
+              onChange={handleChange}
               fullWidth
               required
             />
@@ -107,13 +122,14 @@ const AddTransaction = () => {
               type="submit"
               variant="contained"
               color="primary"
+              disabled={isLoading}
               sx={{
                 width: isMatch ? "100%" : "40%",
                 padding: "0.5rem 2rem",
                 fontSize: "1rem",
               }}
             >
-              Add Transaction
+              {isLoading ? <CircularProgress size={24} color="inherit" /> : "Add Transaction"}
             </Button>
           </Box>
         </form>

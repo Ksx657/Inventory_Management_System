@@ -36,6 +36,15 @@ export const api = createApi({
       }),
       providesTags: ["Transactions"],
     }),
+
+    addTransaction: build.mutation({
+      query: (transactionData) => ({
+        url: "client/addTransaction",
+        method: "POST",
+        body: transactionData,
+      }),
+      invalidatesTags: ["Transactions"],
+    }),
     getGeography: build.query({
       query: () => "client/geography",
       providesTags: ["Geography"],
@@ -69,4 +78,5 @@ export const {
   useGetAdminsQuery,
   useGetUserPerformanceQuery,
   useGetDashboardQuery,
+  useAddTransactionMutation,
 } = api;

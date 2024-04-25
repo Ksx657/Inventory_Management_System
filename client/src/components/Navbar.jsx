@@ -23,6 +23,9 @@ import {
   MenuItem,
   useTheme,
 } from "@mui/material";
+import { toast} from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
@@ -31,7 +34,24 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = () => setAnchorEl(null);
+  const handleClose = async () => {
+    try {
+      const response = await axios.get("http://localhost:5001/users/logout");
+  
+      if (response.status === 200) {
+        // Clear local storage
+        localStorage.removeItem("token");
+        // Perform any additional cleanup or redirection
+        // For example, redirect the user to the login page
+        window.location.href = "/login";
+      }
+    } catch (error) {
+      console.error("Error logging out:", error);
+      // Handle any errors that occur during the logout process
+      // For example, display an error message to the user
+      toast.error("An error occurred during logout. Please try again.");
+    }
+  };
 
   return (
     <AppBar
@@ -115,7 +135,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             <Menu
               anchorEl={anchorEl}
               open={isOpen}
-              onClose={handleClose}
+              
               anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
               <MenuItem onClick={handleClose}>Log Out</MenuItem>

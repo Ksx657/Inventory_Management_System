@@ -10,22 +10,55 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
+import { toast, } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import axios from "axios";
+
 
 const Login = () => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
 
-  const [email, setUsername] = useState("");
-  const [password, setPassword] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // handle login submission here
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    role: "" // Added role field
+  });
 
-    // After successful login, redirect to dashboard
-    navigate("/dashboard");
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prevFormData => ({
+      ...prevFormData,
+      [name]: value,
+    }));
   };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post("http://localhost:5001/users/login", formData);
+
+      if (response.status === 200) {
+        // Assuming the server returns a token upon successful login
+        const token = response.data.token;
+        // Store the token in local storage or state for authentication purposes
+        localStorage.setItem("token", token);
+
+        toast.success("Login successful! Redirecting...");
+        setTimeout(() => navigate("/dashboard"), 2000); // Redirect to the dashboard or any other authenticated page
+      }
+    } catch (error) {
+      const errorMessage =
+        error.response && error.response.data
+          ? error.response.data.message
+          : "An error occurred during login. Please try again.";
+      toast.error(errorMessage);
+    }
+  };
+
 
   return (
     <Container
@@ -65,19 +98,30 @@ const Login = () => {
           >
             <TextField
               label="email"
-              value={email}
-              onChange={(e) => setUsername(e.target.value)}
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
               label="Password"
+              name="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
               fullWidth
               required
             />
+            <TextField // Added role field
+              label="Role"
+              name="role"
+              value={formData.role}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+
           </Box>
           <Box
             sx={{

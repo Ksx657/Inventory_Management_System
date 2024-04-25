@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Table,
@@ -10,28 +10,35 @@ import {
   Paper,
   Button,
   Typography,
+  
 } from "@mui/material";
 import Header from "../../components/Header";
-import { useGetProductsQuery } from "../../state/api";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
 
-const EditDeleteProduct = ({ _id }) => {
-  const navigate = useNavigate();
 
-  const handleEdit = () => {
-    navigate(`/updateproduct/${_id}`);
-  };
-
-  const handleDelete = () => {
-    // Implement your delete logic here
-    console.log(`Deleting product with id: ${_id}`);
+const EditDeleteProduct = ({ productId, onDelete }) => {
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:5001/products/${productId}`);
+      if (response.status === 200) {
+        // Product deleted successfully
+        onDelete(productId);
+      }
+    } catch (error) {
+      console.error("Error deleting product:", error);
+      // Handle error gracefully, e.g., display error message in UI
+      alert("An error occurred while deleting the product. Please try again.");
+    }
   };
 
   return (
     <>
-      <Button variant="contained" color="primary" onClick={handleEdit} sx={{ mr: 1 }}>
-        Edit
-      </Button>
+      <Link to={`/updateproduct/${productId}`}>
+        <Button variant="contained" color="primary" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+      </Link>
       <Button variant="contained" color="secondary" onClick={handleDelete}>
         Delete
       </Button>
@@ -39,39 +46,52 @@ const EditDeleteProduct = ({ _id }) => {
   );
 };
 
-const sampleData = [
-  {
-    _id: "1",
-    name: "Sample Product 1",
-    category: "Sample Category 1",
-    price: 100,
-    rating: 4.5,
-    supply: 50,
-  },
-  {
-    _id: "2",
-    name: "Sample Product 2",
-    category: "Sample Category 2",
-    price: 200,
-    rating: 4.2,
-    supply: 75,
-  },
-  {
-    _id: "3",
-    name: "Sample Product 3",
-    category: "Sample Category 3",
-    price: 300,
-    rating: 4.8,
-    supply: 100,
-  },
-];
+
+
 
 const Products = () => {
-  const { data, isLoading } = useGetProductsQuery();
+  const navigate = useNavigate();
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await axios.get("http://localhost:5001/products");
+        setProducts(response.data.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="PRODUCTS" subtitle="See your list of products." />
+
+      <Link to="/addproduct">
+        <Button
+          variant="contained"
+          sx={{
+            color: "white",
+            backgroundColor: "#21295c",
+            fontSize: "1.2rem",
+            fontWeight: "bold",
+            padding: "1rem 2rem",
+            mb: "2rem",
+            mt: "2rem",
+            ":hover": {
+              backgroundColor: "#191F45",
+            },
+          }}
+        >
+          +Add Product
+        </Button>
+      </Link>
 
       {isLoading ? (
         <Typography>Loading...</Typography>
@@ -82,50 +102,30 @@ const Products = () => {
               <TableRow>
                 <TableCell>Name</TableCell>
                 <TableCell align="right">Category</TableCell>
-                <TableCell align="right">Price</TableCell>
+                <TableCell align="right">Price(Rs.)</TableCell>
                 <TableCell align="right">Rating</TableCell>
-                <TableCell align="right">Supply Left</TableCell>
+                <TableCell align="right">Quantity(KG)</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {data && data.length > 0 ? (
-                data.map((product) => (
-                  <TableRow
-                    key={product._id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {product.name}
-                    </TableCell>
-                    <TableCell align="right">{product.category}</TableCell>
-                    <TableCell align="right">${product.price.toFixed(2)}</TableCell>
-                    <TableCell align="right">{product.rating}</TableCell>
-                    <TableCell align="right">{product.supply}</TableCell>
-                    <TableCell align="right">
-                      <EditDeleteProduct _id={product._id} />
-                    </TableCell>
-                  </TableRow>
-                ))
-              ) : (
-                sampleData.map((product) => (
-                  <TableRow
-                    key={product._id}
-                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                  >
-                    <TableCell component="th" scope="row">
-                      {product.name}
-                    </TableCell>
-                    <TableCell align="right">{product.category}</TableCell>
-                    <TableCell align="right">${product.price.toFixed(2)}</TableCell>
-                    <TableCell align="right">{product.rating}</TableCell>
-                    <TableCell align="right">{product.supply}</TableCell>
-                    <TableCell align="right">
-                      <EditDeleteProduct _id={product._id} />
-                    </TableCell>
-                  </TableRow>
-                ))
-              )}
+              {products.map((product) => (
+                <TableRow
+                  key={product._id}
+                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                >
+                  <TableCell component="th" scope="row">
+                    {product.productName}
+                  </TableCell>
+                  <TableCell align="right">{product.category}</TableCell>
+                  <TableCell align="right">{product.productPrice}</TableCell>
+                  <TableCell align="right">{product.rating}</TableCell>
+                  <TableCell align="right">{product.quantity}</TableCell>
+                  <TableCell align="right">
+                  <EditDeleteProduct productId={product._id} />
+                  </TableCell>
+                </TableRow>
+              ))}
             </TableBody>
           </Table>
         </TableContainer>

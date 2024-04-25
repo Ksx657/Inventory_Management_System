@@ -1,26 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { Box, Button, Container, TextField, Typography, MenuItem } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
+import axios from "axios";
 
 const UpdateProduct = () => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
+  const { productId } = useParams();
 
-  // Sample product IDs, replace this with actual product IDs fetched from the database
-  const productIds = ["1", "2", "3"];
+  const [productData, setProductData] = useState({
+    productId: "",
+    price: "",
+    quantity: "",
+    rating: "",
+  });
 
-  const [productId, setProductId] = useState("");
-  const [quantity, setQuantity] = useState("");
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5001/products/${productId}`);
+        const { productPrice, quantity, rating } = response.data.data;
+        setProductData({
+          productId,
+          price: productPrice,
+          quantity,
+          rating,
+        });
+      } catch (error) {
+        console.error("Error fetching product:", error);
+        // Handle error gracefully, e.g., display error message in UI
+      }
+    };
 
-  const handleSubmit = (e) => {
+    fetchProduct();
+  }, [productId]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle updating product quantity in the database here
+    try {
+      const response = await axios.put(`http://localhost:5001/products/${productId}`, {
+        price: productData.price,
+        quantity: productData.quantity,
+        rating: productData.rating,
+      });
+      if (response.status === 200) {
+        // Show success message
+        alert("Product updated successfully!");
+        // Redirect to products page
+        navigate("/products");
+      }
+    } catch (error) {
+      console.error("Error updating product:", error);
+      // Handle error gracefully, e.g., display error message in UI
+    }
+  };
 
-    // After successful update, redirect to dashboard or products page
-    navigate("/products"); // Change this to the appropriate route
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setProductData({
+      ...productData,
+      [name]: value,
+    });
   };
 
   return (
@@ -61,22 +104,36 @@ const UpdateProduct = () => {
           >
             <TextField
               label="Product ID"
-              value={productId}
-              onChange={(e) => setProductId(e.target.value)}
+              type="text"
+              value={productData.productId}
+              disabled
               fullWidth
               required
-            >
-              {productIds.map((id) => (
-                <MenuItem key={id} value={id}>
-                  {id}
-                </MenuItem>
-              ))}
-            </TextField>
+            />
+            <TextField
+              label="Price"
+              type="number"
+              name="price"
+              value={productData.price}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
             <TextField
               label="Quantity"
               type="number"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
+              name="quantity"
+              value={productData.quantity}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+            <TextField
+              label="Rating"
+              type="number"
+              name="rating"
+              value={productData.rating}
+              onChange={handleChange}
               fullWidth
               required
             />

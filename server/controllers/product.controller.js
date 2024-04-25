@@ -41,7 +41,7 @@ export const getProductById = asyncHandler(async (req, res) => {
 
 // Function to update a product
 export const updateProduct = asyncHandler(async (req, res) => {
-  const productId = req.params.id; // Get ID from the URL parameter
+  const productId = req.params.id; // Get product ID from the request body
 
   if (!isValidObjectId(productId)) {
     return res.status(400).json({ success: false, message: "Invalid product ID" });
@@ -53,9 +53,15 @@ export const updateProduct = asyncHandler(async (req, res) => {
     return res.status(404).json({ success: false, message: "Product not found" });
   }
 
+  const productUpdates = {
+    price: req.body.price,
+    quantity: req.body.quantity,
+    rating: req.body.rating
+  };
+
   const updatedProduct = await Product.findByIdAndUpdate(
     productId,
-    req.body,
+    productUpdates,
     { new: true } // Return the updated document
   );
 

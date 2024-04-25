@@ -38,42 +38,58 @@ export const getCustomers = async (req, res) => {
 
 export const getTransactions = async (req, res) => {
   try {
-    // sort should look like this: { "field": "userId", "sort": "desc"}
     const { page = 1, pageSize = 20, sort = null, search = "" } = req.query;
 
-    // formatted sort should look like { userId: -1 }
-    const generateSort = () => {
-      const sortParsed = JSON.parse(sort);
-      const sortFormatted = {
-        [sortParsed.field]: (sortParsed.sort = "asc" ? 1 : -1),
-      };
+    // Parse the sort parameter if provided
+    const sortOptions = sort ? JSON.parse(sort) : {};
 
-      return sortFormatted;
-    };
-    const sortFormatted = Boolean(sort) ? generateSort() : {};
+    // Define the sort direction based on the sort field and order
+    const sortField = sortOptions.field || "_id"; // Default to sorting by ID
+    const sortOrder = sortOptions.sort === "desc" ? -1 : 1;
 
-    const transactions = await Transaction.find({
+    // Define the search criteria for cost and userId fields
+    const searchCriteria = {
       $or: [
         { cost: { $regex: new RegExp(search, "i") } },
         { userId: { $regex: new RegExp(search, "i") } },
       ],
-    })
-      .sort(sortFormatted)
-      .skip(page * pageSize)
+    };
+
+    // Perform the database query
+    const transactions = await Transaction.find(searchCriteria)
+      .sort({ [sortField]: sortOrder })
+      .skip((page - 1) * pageSize) // Adjust page number to skip the correct number of documents
       .limit(pageSize);
 
-    const total = await Transaction.countDocuments({
-      name: { $regex: search, $options: "i" },
-    });
+    // Count the total number of documents matching the search criteria
+    const total = await Transaction.countDocuments(searchCriteria);
 
-    res.status(200).json({
-      transactions,
-      total,
-    });
+    // Return the results
+    res.status(200).json({ transactions, total });
   } catch (error) {
-    res.status(404).json({ message: error.message });
+    res.status(500).json({ message: "Internal server error", error: error.message });
   }
 };
+
+export const addTransaction = async (req, res) => {
+  try {
+    const { customerId, createdAt, quantity, cost } = req.body;
+
+    const newTransaction = new Transaction({
+      customerId,
+      createdAt,
+      quantity,
+      cost,
+    });
+
+    await newTransaction.save();
+
+    res.status(201).json(newTransaction);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 
 export const getGeography = async (req, res) => {
   try {
