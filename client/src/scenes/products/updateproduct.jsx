@@ -60,7 +60,6 @@ const UpdateProduct = () => {
             }}
           >
             <TextField
-              select
               label="Product ID"
               value={productId}
               onChange={(e) => setProductId(e.target.value)}
