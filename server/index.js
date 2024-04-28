@@ -12,7 +12,7 @@ import managementRoutes from "./routes/management.js";
 import salesRoutes from "./routes/sales.js";
 import productRoutes from "./routes/product.route.js";
 import userRouter from "./routes/userRouter.js";
-import transactionRoutes from "./routes/transaction.route.js"
+import transactionRouter from "./routes/transaction.route.js"
 
 
 // data imports
@@ -52,7 +52,7 @@ app.use("/management", managementRoutes);
 app.use("/sales", salesRoutes);
 app.use('/products', productRoutes);
 app.use("/users", userRouter);
-app.use("/transactions",transactionRoutes);
+app.use("/transactions",transactionRouter);
 
 /* MONGOOSE SETUP */
 const PORT = process.env.PORT || 9000;

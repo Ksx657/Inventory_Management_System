@@ -1,7 +1,10 @@
 import React, { useState } from "react";
-import { useTheme, useMediaQuery, Button, TextField, Container, Box, Typography, CircularProgress } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
+import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { useAddTransactionMutation } from "../../state/api"; // Import the generated mutation hook from the API file
+import toast from 'react-hot-toast';
+import axios from "axios";
 
 const AddTransaction = () => {
   const theme = useTheme();
@@ -12,10 +15,8 @@ const AddTransaction = () => {
     customerId: "",
     createdAt: "",
     quantity: "",
-    cost: "",
+    cost: ""
   });
-
-  const [addTransaction, { isLoading }] = useAddTransactionMutation(); // Use the generated mutation hook
 
   const handleChange = (e) => {
     setFormData({
@@ -28,13 +29,17 @@ const AddTransaction = () => {
     e.preventDefault();
 
     try {
-      // Call the addTransaction mutation function with the formData
-      const { data } = await addTransaction(formData);
+      const response = await axios.post("http://localhost:5001/transactions/", formData);
 
-      // Assuming the response status is not used, you can navigate immediately
-      navigate("/transactions");
+      if (response.status === 201) {
+        // Show success message
+        toast.success("Transaction added successfully!");
+        // Redirect to transactions page
+        navigate("/transactions");
+      }
     } catch (error) {
-      console.error("An error occurred while adding the transaction. Please try again.", error);
+      // Show error message
+      toast.error("An error occurred while adding the transaction. Please try again.");
     }
   };
 
@@ -85,7 +90,7 @@ const AddTransaction = () => {
             <TextField
               name="createdAt"
               label="Created At"
-              type="date"
+              type="datetime-local"
               value={formData.createdAt}
               onChange={handleChange}
               fullWidth
@@ -122,14 +127,13 @@ const AddTransaction = () => {
               type="submit"
               variant="contained"
               color="primary"
-              disabled={isLoading}
               sx={{
                 width: isMatch ? "100%" : "40%",
                 padding: "0.5rem 2rem",
                 fontSize: "1rem",
               }}
             >
-              {isLoading ? <CircularProgress size={24} color="inherit" /> : "Add Transaction"}
+              Add Transaction
             </Button>
           </Box>
         </form>

@@ -25,8 +25,32 @@ export const api = createApi({
       providesTags: ["Products"],
     }),
     getCustomers: build.query({
-      query: () => "client/customers",
+      queryFn: () => "client/getCustomers",
       providesTags: ["Customers"],
+    }),
+    addCustomer: build.mutation({
+      mutationFn: (newCustomerData) => {
+        return fetch("/api/customers", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(newCustomerData),
+        }).then((res) => res.json());
+      },
+      invalidatesTags: ["Customers"],
+    }),
+    updateCustomer: build.mutation({
+      mutationFn: ({ customerId, updatedCustomerData }) => {
+        return fetch(`/api/customers/${customerId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(updatedCustomerData),
+        }).then((res) => res.json());
+      },
+      invalidatesTags: ["Customers"],
     }),
     getTransactions: build.query({
       query: ({ page, pageSize, sort, search }) => ({
@@ -71,7 +95,6 @@ export const api = createApi({
 export const {
   useGetUserQuery,
   useGetProductsQuery,
-  useGetCustomersQuery,
   useGetTransactionsQuery,
   useGetGeographyQuery,
   useGetSalesQuery,
@@ -79,4 +102,7 @@ export const {
   useGetUserPerformanceQuery,
   useGetDashboardQuery,
   useAddTransactionMutation,
+  useAddCustomerMutation,
+  useUpdateCustomerMutation,
+  useGetCustomersQuery
 } = api;

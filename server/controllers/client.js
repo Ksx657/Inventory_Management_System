@@ -4,6 +4,7 @@ import ProductStat from "../models/ProductStat.js";
 import User from "../models/userSchema.js";
 import Transaction from "../models/Transaction.js";
 import getCountryIso3 from "country-iso-2-to-3";
+import Customer from "../models/customers.js";
 
 export const getProducts = async (req, res) => {
   try {
@@ -29,10 +30,37 @@ export const getProducts = async (req, res) => {
 
 export const getCustomers = async (req, res) => {
   try {
-    const customers = await User.find({ role: "user" }).select("-password");
+    const customers = await Customer.find();
     res.status(200).json(customers);
   } catch (error) {
     res.status(404).json({ message: error.message });
+  }
+};
+
+export const addCustomer = async (req, res) => {
+  const customerData = req.body;
+
+  try {
+    const newCustomer = new Customer(customerData);
+    await newCustomer.save();
+    res.status(201).json(newCustomer);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+export const updateCustomer = async (req, res) => {
+  const { customerId } = req.params;
+  const customerData = req.body;
+
+  try {
+    const updatedCustomer = await Customer.findByIdAndUpdate(customerId, customerData, { new: true });
+    if (!updatedCustomer) {
+      return res.status(404).json({ message: 'Customer not found' });
+    }
+    res.status(200).json(updatedCustomer);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };
 
@@ -54,6 +82,8 @@ export const getTransactions = async (req, res) => {
         { userId: { $regex: new RegExp(search, "i") } },
       ],
     };
+  
+  
 
     // Perform the database query
     const transactions = await Transaction.find(searchCriteria)
@@ -73,23 +103,14 @@ export const getTransactions = async (req, res) => {
 
 export const addTransaction = async (req, res) => {
   try {
-    const { customerId, createdAt, quantity, cost } = req.body;
-
-    const newTransaction = new Transaction({
-      customerId,
-      createdAt,
-      quantity,
-      cost,
-    });
-
-    await newTransaction.save();
-
-    res.status(201).json(newTransaction);
+    const { customerId,createdAt,quantity,cost } = req.body;
+    const transaction = new Transaction({ customerId,createdAt,quantity,cost });
+    await transaction.save();
+    res.status(201).json({ message: 'Transaction added successfully' });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
-
 
 export const getGeography = async (req, res) => {
   try {

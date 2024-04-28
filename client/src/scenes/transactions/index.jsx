@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,25 +13,61 @@ import {
 } from "@mui/material";
 import Header from "../../components/Header";
 import { Link } from "react-router-dom";
-import { useGetTransactionsQuery } from "../../state/api";
+import axios from "axios";
+
+const EditDeleteTransaction = ({ transactionId, onDelete }) => {
+  const handleDelete = async () => {
+    try {
+      const response = await axios.delete(`http://localhost:5001/transactions/${transactionId}`);
+      if (response.status === 200) {
+        // Transaction deleted successfully
+        onDelete(transactionId);
+      }
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+      // Handle error gracefully, e.g., display error message in UI
+      alert("An error occurred while deleting the transaction. Please try again.");
+    }
+  };
+
+  return (
+    <>
+      <Link to={`/edittransaction/${transactionId}`}>
+        <Button variant="contained" color="primary" sx={{ mr: 1 }}>
+          Edit
+        </Button>
+      </Link>
+      <Button variant="contained" color="secondary" onClick={handleDelete}>
+        Delete
+      </Button>
+    </>
+  );
+};
 
 const Transactions = () => {
-  const { data: transactionsData, isLoading, isError } = useGetTransactionsQuery({
-    page: 1, // Specify page number if paginating
-    pageSize: 20, // Specify page size
-    sort: { field: "createdAt", sort: "asc" }, // Specify sorting field and order
-    search: "", // Specify search query if needed
-  });
+  const [transactions, setTransactions] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  if (isLoading) {
-    return <Typography>Loading...</Typography>;
-  }
+  useEffect(() => {
+    const fetchTransactions = async () => {
+      try {
+        const response = await axios.get("http://localhost:5001/transactions");
+        setTransactions(response.data.data);
+        setIsLoading(false);
+      } catch (error) {
+        console.error("Error fetching transactions:", error);
+        setIsLoading(false);
+      }
+    };
 
-  if (isError) {
-    return <Typography>Error fetching transactions.</Typography>;
-  }
+    fetchTransactions();
+  }, []);
 
-  const transactions = transactionsData ? transactionsData.transactions : [];
+  const handleDeleteTransaction = (deletedTransactionId) => {
+    setTransactions((prevTransactions) =>
+      prevTransactions.filter((transaction) => transaction._id !== deletedTransactionId)
+    );
+  };
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -57,35 +93,41 @@ const Transactions = () => {
         </Button>
       </Link>
 
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
-          <TableHead>
-            <TableRow>
-              <TableCell>ID</TableCell>
-              <TableCell align="right">Customer ID</TableCell>
-              <TableCell align="right">CreatedAt</TableCell>
-              <TableCell align="right">Quantity</TableCell>
-              <TableCell align="right">Cost</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {transactions.map((transaction) => (
-              <TableRow
-                key={transaction._id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {transaction._id}
-                </TableCell>
-                <TableCell align="right">{transaction.customerId}</TableCell>
-                <TableCell align="right">{transaction.createdAt}</TableCell>
-                <TableCell align="right">{transaction.quantity}</TableCell>
-                <TableCell align="right">{transaction.cost}</TableCell>
+      {isLoading ? (
+        <Typography>Loading...</Typography>
+      ) : (
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell align="right">Customer ID</TableCell>
+                <TableCell align="right">Created At</TableCell>
+                <TableCell align="right">Quantity</TableCell>
+                <TableCell align="right">Cost</TableCell>
+                <TableCell align="right">Actions</TableCell>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
+            </TableHead>
+            <TableBody>
+              {transactions.map((transaction) => (
+                <TableRow key={transaction._id}>
+                  <TableCell>{transaction._id}</TableCell>
+                  <TableCell align="right">{transaction.customerId}</TableCell>
+                  <TableCell align="right">{transaction.createdAt}</TableCell>
+                  <TableCell align="right">{transaction.quantity}</TableCell>
+                  <TableCell align="right">{transaction.cost}</TableCell>
+                  <TableCell align="right">
+                    <EditDeleteTransaction
+                      transactionId={transaction._id}
+                      onDelete={handleDeleteTransaction}
+                    />
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </Box>
   );
 };

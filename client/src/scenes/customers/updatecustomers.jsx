@@ -1,42 +1,72 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 
-const AddCustomer = () => {
+const UpdateCustomer = () => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
+  const { customerId } = useParams();
 
-  const [customerId, setCustomerId] = useState("");
-  const [customerName, setCustomerName] = useState("");
-  const [customerAddress, setCustomerAddress] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
-  const [customerPhoneno, setCustomerPhoneno] = useState("");
+  const [customerData, setCustomerData] = useState({
+    customerId: "",
+    name: "",
+    address: "",
+    email: "",
+    phoneNumber: "",
+  });
+
+  useEffect(() => {
+    const fetchCustomer = async () => {
+      try {
+        const response = await axios.get(`http://localhost:5001/customers/${customerId}`);
+        const { name, address, email, phoneNumber } = response.data.data;
+        setCustomerData({
+          customerId,
+          name,
+          address,
+          email,
+          phoneNumber,
+        });
+      } catch (error) {
+        console.error("Error fetching customer:", error);
+        // Handle error gracefully, e.g., display error message in UI
+      }
+    };
+
+    fetchCustomer();
+  }, [customerId]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/client/src/state/api.js/addCustomer", {
-        id:customerId,
-        name: customerName,
-        address: customerAddress,
-        email: customerEmail,
-        phoneNumber: customerPhoneno,
+      const response = await axios.put(`http://localhost:5001/customers/${customerId}`, {
+        name: customerData.name,
+        address: customerData.address,
+        email: customerData.email,
+        phoneNumber: customerData.phoneNumber,
       });
-      if (response.status === 201) {
+      if (response.status === 200) {
         // Show success message
-        alert("Customer added successfully!");
-        // Redirect to customers page
+        alert("Customer details updated successfully!");
+        // Redirect to customers page or wherever appropriate
         navigate("/customers");
       }
     } catch (error) {
-      console.error("Error adding customer:", error);
+      console.error("Error updating customer details:", error);
       // Handle error gracefully, e.g., display error message in UI
-      alert("An error occurred while adding the customer. Please try again.");
     }
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setCustomerData({
+      ...customerData,
+      [name]: value,
+    });
   };
 
   return (
@@ -61,11 +91,11 @@ const AddCustomer = () => {
           variant="h3"
           sx={{
             textAlign: "center",
-            color:theme.palette.secondary.light,
+            color: theme.palette.secondary.light,
             marginBottom: "2rem",
           }}
         >
-          Add Customer
+          Update Customer Details
         </Typography>
         <form onSubmit={handleSubmit}>
           <Box
@@ -77,36 +107,45 @@ const AddCustomer = () => {
           >
             <TextField
               label="Customer ID"
-              value={customerId}
-              onChange={(e) => setCustomerId(e.target.value)}
+              type="text"
+              value={customerData.customerId}
+              disabled
               fullWidth
               required
             />
             <TextField
-              label="Customer Name"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
+              label="Name"
+              type="text"
+              name="name"
+              value={customerData.name}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
-              label="Customer Address"
-              value={customerAddress}
-              onChange={(e) => setCustomerAddress(e.target.value)}
+              label="Address"
+              type="text"
+              name="address"
+              value={customerData.address}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
-              label="Customer Email"
-              value={customerEmail}
-              onChange={(e) => setCustomerEmail(e.target.value)}
+              label="Email"
+              type="email"
+              name="email"
+              value={customerData.email}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
-              label="Customer Phone Number"
-              value={customerPhoneno}
-              onChange={(e) => setCustomerPhoneno(e.target.value)}
+              label="Phone Number"
+              type="tel"
+              name="phoneNumber"
+              value={customerData.phoneNumber}
+              onChange={handleChange}
               fullWidth
               required
             />
@@ -129,7 +168,7 @@ const AddCustomer = () => {
                 fontSize: "1rem",
               }}
             >
-              Add Customer
+              Update Customer Details
             </Button>
           </Box>
         </form>
@@ -138,4 +177,4 @@ const AddCustomer = () => {
   );
 };
 
-export default AddCustomer;
+export default UpdateCustomer;
