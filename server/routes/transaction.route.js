@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/addtransactions', addTransaction);
 
 // Route to get all transactions
-router.get('/transactions', getAll);
+router.get('/', getAll);
 
 // Route to get a transaction by ID
 router.get('/transactions/:id', getTransactionById);

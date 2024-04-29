@@ -19,7 +19,7 @@ const AddCustomer = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/client/src/state/api.js/addCustomer", {
+      const response = await axios.post("http://localhost:5001/client/addCustomer", {
         id:customerId,
         name: customerName,
         address: customerAddress,

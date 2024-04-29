@@ -36,24 +36,28 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const isOpen = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
-  const handleClose = async () => {
+  const handleClose = async (e) => {
     try {
-      const response = await axios.get("http://localhost:5001/users/logout");
-  
-      if (response.status === 200) {
-        // Clear local storage
-        localStorage.removeItem("token");
-        // Redirect the user to the login page
-        navigate("/login");
-        toast.success("Logged out successfully.");
-      }
-    } catch (error) {
+      navigate("/login");
+    }catch(error){
       console.error("Error logging out:", error);
-      // Handle any errors that occur during the logout process
-      // For example, display an error message to the user
-      toast.error("An error occurred during logout. Please try again.");
     }
-    setAnchorEl(null); // Close the menu
+      // const response = await axios.get("http://localhost:5001/users/logout");
+  
+    //   if (response.status === 200) {
+    //     // Clear local storage
+    //     localStorage.removeItem("token");
+    //     // Redirect the user to the login page
+    //     navigate("/login");
+    //     toast.success("Logged out successfully.");
+    //   }
+    // } catch (error) {
+    //   console.error("Error logging out:", error);
+    //   // Handle any errors that occur during the logout process
+    //   // For example, display an error message to the user
+    //   toast.error("An error occurred during logout. Please try again.");
+    // }
+    // setAnchorEl(null); // Close the menu
   };
 
   return (

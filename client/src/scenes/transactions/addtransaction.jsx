@@ -12,6 +12,7 @@ const AddTransaction = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    transId:"",
     customerId: "",
     createdAt: "",
     quantity: "",
@@ -29,7 +30,7 @@ const AddTransaction = () => {
     e.preventDefault();
 
     try {
-      const response = await axios.post("http://localhost:5001/transactions/", formData);
+      const response = await axios.post("http://localhost:5001/transactions/addtransactions", formData);
 
       if (response.status === 201) {
         // Show success message
@@ -81,8 +82,8 @@ const AddTransaction = () => {
           >
             <TextField
               name="transId"
-              label="Transaaction ID"
-              value={formData.customerId}
+              label="Transaction ID"
+              value={formData.transId}
               onChange={handleChange}
               fullWidth
               required

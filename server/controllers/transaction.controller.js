@@ -16,7 +16,7 @@ export const addTransaction = async (req, res) => {
   export const getAll=async (req,res)=>{
     try{
         const transactions=await Transaction.find()
-        return res.status(200).json({success:true,message:"Transactions fetched successfully",data:products})
+        return res.status(200).json({success:true,message:"Transactions fetched successfully",data:transactions})
     } catch (error){
         return res.status(500).json({success:false,message:error})
     }

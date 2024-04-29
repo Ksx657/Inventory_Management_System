@@ -24,8 +24,8 @@ export const register = catchAsyncErrors(async (req, res, next) => {
 });
 
 export const login = catchAsyncErrors(async (req, res, next) => {
-  const { email, password, role } = req.body;
-  if (!email || !password || !role) {
+  const { email, password } = req.body;
+  if (!email || !password ) {
     return next(new ErrorHandler("Please fill full form!", 400));
   }
   const user = await User.findOne({ email }).select("+password");
@@ -36,11 +36,11 @@ export const login = catchAsyncErrors(async (req, res, next) => {
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid email or password", 400));
   }
-  if (user.role !== role) {
-    return next(
-      new ErrorHandler(`User with provided role(${role}) not found`, 400)
-    );
-  }
+  // if (user.role !== role) {
+  //   return next(
+  //     new ErrorHandler(`User with provided role(${role}) not found`, 400)
+  //   );
+  // }
   sendToken(user, 200, "User logged in successfully", res);
 });
 

@@ -1,4 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import Header from "../../components/Header";
+import { Link } from "react-router-dom";
 import {
   Box,
   Table,
@@ -11,9 +14,7 @@ import {
   Button,
   Typography,
 } from "@mui/material";
-import Header from "../../components/Header";
-import { Link } from "react-router-dom";
-import axios from "axios";
+
 
 const EditDeleteCustomer = ({ customerId, onDelete }) => {
   const handleDelete = async () => {
@@ -44,20 +45,20 @@ const EditDeleteCustomer = ({ customerId, onDelete }) => {
   );
 };
 
+
 const Customers = () => {
-  const [customers, setCustomers] = useState([]);
+  const [customers, setCustomers] = useState(); // Initial state is undefined
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get("/client/src/state/api.js/customers");
-        setCustomers(response.data.data);
-        setIsLoading(false);
+        const response = await axios.get('http://localhost:5001/client/customers');
+        setCustomers(response.data); // Assuming data.data always exists
       } catch (error) {
-        console.error("Error fetching customers:", error);
-        setIsLoading(false);
+        console.error('Error fetching customers:', error);
       }
+      setIsLoading(false); // This might not run if there's an error
     };
 
     fetchCustomers();
@@ -67,9 +68,11 @@ const Customers = () => {
     setCustomers(customers.filter((customer) => customer._id !== customerId));
   };
 
+
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="CUSTOMERS" subtitle="List of Customers" />
+
 
       <Link to="/addcustomer">
         <Button
@@ -94,8 +97,7 @@ const Customers = () => {
       {isLoading ? (
         <Typography>Loading...</Typography>
       ) : (
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
@@ -106,27 +108,20 @@ const Customers = () => {
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {customers.map((customer) => (
-                <TableRow
-                  key={customer._id}
-                  sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-                >
-                  <TableCell component="th" scope="row">
-                    {customer._id}
-                  </TableCell>
-                  <TableCell align="right">{customer.name}</TableCell>
-                  <TableCell align="right">{customer.address}</TableCell>
-                  <TableCell align="right">{customer.email}</TableCell>
+          {/* If customers is undefined, this will cause a crash */}
+          {customers.map((customer) => (
+            <TableRow key={customer._id}>
+              <TableCell>{customer.name}</TableCell>
+              {/* Assume customer fields are always present */}
+              <TableCell>{customer.address}</TableCell>
+              <TableCell align="right">{customer.email}</TableCell>
                   <TableCell align="right">{customer.phoneNumber}</TableCell>
                   <TableCell align="right">
                     <EditDeleteCustomer customerId={customer._id} onDelete={handleDeleteCustomer} />
                   </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </TableContainer>
+            </TableRow>
+          ))}
+        </Table>
       )}
     </Box>
   );
