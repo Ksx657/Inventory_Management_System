@@ -44,17 +44,23 @@ export const login = catchAsyncErrors(async (req, res, next) => {
   sendToken(user, 200, "User logged in successfully", res);
 });
 
-export const logout = catchAsyncErrors((req, res, next) => {
-  res
-    .status(200)
-    .cookie("token", "", {
-      expires: new Date(Date.now()),
-      httpOnly: true,
-    })
-    .json({
+export const logout = catchAsyncErrors(async (req, res, next) => {
+  // Check if token exists in cookies
+  if (!req.cookies || !req.cookies.token) {
+    return res.status(401).json({ success: false, message: 'Unauthorized' });
+  }
+
+  try {
+    // Clear token from cookies
+    res.clearCookie('token');
+  
+    res.status(200).json({
       success: true,
-      message: "User logged out!",
+      message: "User logged out successfully",
     });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
 });
 
 export const getMyProfile = catchAsyncErrors((req, res, next) => {

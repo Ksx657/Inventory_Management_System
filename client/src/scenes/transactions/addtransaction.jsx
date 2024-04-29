@@ -80,6 +80,14 @@ const AddTransaction = () => {
             }}
           >
             <TextField
+              name="transId"
+              label="Transaaction ID"
+              value={formData.customerId}
+              onChange={handleChange}
+              fullWidth
+              required
+            />
+            <TextField
               name="customerId"
               label="Customer ID"
               value={formData.customerId}

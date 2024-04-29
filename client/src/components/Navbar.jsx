@@ -23,12 +23,14 @@ import {
   MenuItem,
   useTheme,
 } from "@mui/material";
-import { toast} from "react-toastify";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
 const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const theme = useTheme();
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -41,9 +43,9 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
       if (response.status === 200) {
         // Clear local storage
         localStorage.removeItem("token");
-        // Perform any additional cleanup or redirection
-        // For example, redirect the user to the login page
-        window.location.href = "/login";
+        // Redirect the user to the login page
+        navigate("/login");
+        toast.success("Logged out successfully.");
       }
     } catch (error) {
       console.error("Error logging out:", error);
@@ -51,6 +53,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
       // For example, display an error message to the user
       toast.error("An error occurred during logout. Please try again.");
     }
+    setAnchorEl(null); // Close the menu
   };
 
   return (
@@ -135,7 +138,7 @@ const Navbar = ({ user, isSidebarOpen, setIsSidebarOpen }) => {
             <Menu
               anchorEl={anchorEl}
               open={isOpen}
-              
+              onClose={() => setAnchorEl(null)}
               anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
             >
               <MenuItem onClick={handleClose}>Log Out</MenuItem>

@@ -10,7 +10,7 @@ import {
 } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
-import { toast, } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 
@@ -19,7 +19,6 @@ const Login = () => {
   const theme = useTheme();
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
-
 
   const [formData, setFormData] = useState({
     email: "",
@@ -47,18 +46,13 @@ const Login = () => {
         // Store the token in local storage or state for authentication purposes
         localStorage.setItem("token", token);
 
-        toast.success("Login successful! Redirecting...");
-        setTimeout(() => navigate("/dashboard"), 2000); // Redirect to the dashboard or any other authenticated page
+        // Redirect to the dashboard or any other authenticated page
+        navigate("/dashboard");
       }
     } catch (error) {
-      const errorMessage =
-        error.response && error.response.data
-          ? error.response.data.message
-          : "An error occurred during login. Please try again.";
-      toast.error(errorMessage);
+      toast.error("Invalid email or password. Please try again.");
     }
   };
-
 
   return (
     <Container
@@ -121,7 +115,6 @@ const Login = () => {
               fullWidth
               required
             />
-
           </Box>
           <Box
             sx={{

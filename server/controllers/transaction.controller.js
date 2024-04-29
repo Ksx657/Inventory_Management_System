@@ -4,8 +4,8 @@ import { isValidObjectId } from 'mongoose';
 
 export const addTransaction = async (req, res) => {
     try {
-      const { customerId,createdAt,quantity,cost } = req.body;
-      const transaction = new Transaction({ customerId,createdAt,quantity,cost });
+      const { transId,customerId,createdAt,quantity,cost } = req.body;
+      const transaction = new Transaction({ transId,customerId,createdAt,quantity,cost });
       await transaction.save();
       res.status(201).json({ message: 'Transaction added successfully' });
     } catch (error) {
@@ -13,24 +13,28 @@ export const addTransaction = async (req, res) => {
     }
   };
   
-  export const getAllTransactions = asyncHandler(async (req, res) => {
-    const transactions = await Transaction.find();
-    res.status(200).json({ success: true, data: transactions });
-});
+  export const getAll=async (req,res)=>{
+    try{
+        const transactions=await Transaction.find()
+        return res.status(200).json({success:true,message:"Transactions fetched successfully",data:products})
+    } catch (error){
+        return res.status(500).json({success:false,message:error})
+    }
+  }
 
 // Controller function to get a transaction by ID
 export const getTransactionById = asyncHandler(async (req, res) => {
-    const transactionId = req.params.id;
+  const transId = req.params.id; // Get ID from the URL parameter
 
-    if (!isValidObjectId(transactionId)) {
-        return res.status(400).json({ success: false, message: "Invalid transaction ID" });
-    }
+  if (!isValidObjectId(productId)) {
+    return res.status(400).json({ success: false, message: "Invalid product ID" });
+  }
 
-    const transaction = await Transaction.findById(transactionId);
+  const transaction = await Transaction.findById(transId);
 
-    if (!transaction) {
-        return res.status(404).json({ success: false, message: "Transaction not found" });
-    }
+  if (!product) {
+    return res.status(404).json({ success: false, message: "Product not found" });
+  }
 
-    res.status(200).json({ success: true, data: transaction });
+  res.status(200).json({ success: true, data: transaction });
 });

@@ -109,18 +109,18 @@ const Transactions = () => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {transactions.map((transaction) => (
-                <TableRow key={transaction._id}>
-                  <TableCell>{transaction._id}</TableCell>
-                  <TableCell align="right">{transaction.customerId}</TableCell>
-                  <TableCell align="right">{transaction.createdAt}</TableCell>
-                  <TableCell align="right">{transaction.quantity}</TableCell>
-                  <TableCell align="right">{transaction.cost}</TableCell>
-                  <TableCell align="right">
-                    <EditDeleteTransaction
-                      transactionId={transaction._id}
-                      onDelete={handleDeleteTransaction}
-                    />
+            {transactions.map((transaction) => (
+                    <TableRow key={transaction.transId}> {/* Update key */}
+                    <TableCell>{transaction.transId}</TableCell> {/* Update field */}
+                    <TableCell align="right">{transaction.customerId}</TableCell>
+                    <TableCell align="right">{transaction.createdAt}</TableCell>
+                    <TableCell align="right">{transaction.quantity}</TableCell>
+                    <TableCell align="right">{transaction.cost}</TableCell>
+                    <TableCell align="right">
+                      <EditDeleteTransaction
+                        transactionId={transaction.transId} 
+                        onDelete={handleDeleteTransaction}
+                      />
                   </TableCell>
                 </TableRow>
               ))}

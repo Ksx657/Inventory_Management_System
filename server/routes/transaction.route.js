@@ -1,13 +1,13 @@
 import express from 'express';
-import { addTransaction, getAllTransactions, getTransactionById } from '../controllers/transaction.controller.js';
+import { addTransaction, getAll, getTransactionById } from '../controllers/transaction.controller.js';
 
 const router = express.Router();
 
 // Route to add a new transaction
-router.post('/transactions', addTransaction);
+router.post('/addtransactions', addTransaction);
 
 // Route to get all transactions
-router.get('/transactions', getAllTransactions);
+router.get('/transactions', getAll);
 
 // Route to get a transaction by ID
 router.get('/transactions/:id', getTransactionById);
