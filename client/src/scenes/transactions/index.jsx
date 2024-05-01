@@ -15,13 +15,13 @@ import Header from "../../components/Header";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const EditDeleteTransaction = ({ transactionId, onDelete }) => {
+const EditDeleteTransaction = ({ transId, onDelete }) => {
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:5001/transactions/${transactionId}`);
+      const response = await axios.delete(`http://localhost:5001/transactions/${transId}`);
       if (response.status === 200) {
         // Transaction deleted successfully
-        onDelete(transactionId);
+        onDelete(transId);
       }
     } catch (error) {
       console.error("Error deleting transaction:", error);
@@ -32,11 +32,8 @@ const EditDeleteTransaction = ({ transactionId, onDelete }) => {
 
   return (
     <>
-      <Link to={`/edittransaction/${transactionId}`}>
-        <Button variant="contained" color="primary" sx={{ mr: 1 }}>
-          Edit
-        </Button>
-      </Link>
+      
+
       <Button variant="contained" color="secondary" onClick={handleDelete}>
         Delete
       </Button>
@@ -64,10 +61,12 @@ const Transactions = () => {
   }, []);
 
   const handleDeleteTransaction = (deletedTransactionId) => {
-    setTransactions((prevTransactions) =>
-      prevTransactions.filter((transaction) => transaction._id !== deletedTransactionId)
+    // Assuming you have transactions state and setTransactions function
+    setTransactions(prevTransactions =>
+      prevTransactions.filter(transaction => transaction._id !== deletedTransactionId)
     );
   };
+  
 
   return (
     <Box m="1.5rem 2.5rem">

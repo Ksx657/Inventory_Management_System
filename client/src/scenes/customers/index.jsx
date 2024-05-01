@@ -19,7 +19,7 @@ import {
 const EditDeleteCustomer = ({ customerId, onDelete }) => {
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:5001/customers/${customerId}`);
+      const response = await axios.delete(`http://localhost:5001/client/customers/${customerId}`);
       if (response.status === 200) {
         // Customer deleted successfully
         onDelete(customerId);
@@ -47,25 +47,28 @@ const EditDeleteCustomer = ({ customerId, onDelete }) => {
 
 
 const Customers = () => {
-  const [customers, setCustomers] = useState(); // Initial state is undefined
+  const [customers, setCustomers] = useState();
   const [isLoading, setIsLoading] = useState(true);
+
 
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
         const response = await axios.get('http://localhost:5001/client/customers');
-        setCustomers(response.data); // Assuming data.data always exists
+        setCustomers(response.data);
+        setIsLoading(false);
       } catch (error) {
-        console.error('Error fetching customers:', error);
+        console.error("Error fetching products:", error);
+        setIsLoading(false);
       }
-      setIsLoading(false); // This might not run if there's an error
     };
 
     fetchCustomers();
   }, []);
 
-  const handleDeleteCustomer = (customerId) => {
-    setCustomers(customers.filter((customer) => customer._id !== customerId));
+  const handleDelete = (deletedCustomerId) => {
+    // Update the product list by removing the deleted product
+    setCustomers((prevCustomers) => prevCustomers.filter((customer) => customer._id !== deletedCustomerId));
   };
 
 
@@ -97,7 +100,8 @@ const Customers = () => {
       {isLoading ? (
         <Typography>Loading...</Typography>
       ) : (
-        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
             <TableHead>
               <TableRow>
                 <TableCell>ID</TableCell>
@@ -105,23 +109,26 @@ const Customers = () => {
                 <TableCell align="right">Address</TableCell>
                 <TableCell align="right">Email</TableCell>
                 <TableCell align="right">Phone Number</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                <TableCell align="right">Actions</TableCell> {/* Moved the Actions column */}
               </TableRow>
             </TableHead>
-          {/* If customers is undefined, this will cause a crash */}
-          {customers.map((customer) => (
-            <TableRow key={customer._id}>
-              <TableCell>{customer.name}</TableCell>
-              {/* Assume customer fields are always present */}
-              <TableCell>{customer.address}</TableCell>
-              <TableCell align="right">{customer.email}</TableCell>
+            <TableBody>
+              {customers.map((customer) => (
+                <TableRow key={customer._id}>
+                  <TableCell>{customer._id}</TableCell>
+                  <TableCell align="right">{customer.name}</TableCell>
+                  <TableCell align="right">{customer.address}</TableCell>
+                  <TableCell align="right">{customer.email}</TableCell>
                   <TableCell align="right">{customer.phoneNumber}</TableCell>
                   <TableCell align="right">
-                    <EditDeleteCustomer customerId={customer._id} onDelete={handleDeleteCustomer} />
+                    <EditDeleteCustomer customerId={customer._id}
+                    onDelete={handleDelete} />
                   </TableCell>
-            </TableRow>
-          ))}
-        </Table>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
     </Box>
   );

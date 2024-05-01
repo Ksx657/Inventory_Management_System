@@ -10,22 +10,24 @@ const AddCustomer = () => {
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
 
-  const [customerId, setCustomerId] = useState("");
-  const [customerName, setCustomerName] = useState("");
-  const [customerAddress, setCustomerAddress] = useState("");
-  const [customerEmail, setCustomerEmail] = useState("");
-  const [customerPhoneno, setCustomerPhoneno] = useState("");
+  const [formData,setFormData]=useState({
+    customerId:"",
+    customerName:"",
+    customerAddress:"",
+    customerEmail:"",
+    customerPhoneno:""
+  });
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5001/client/addCustomer", {
-        id:customerId,
-        name: customerName,
-        address: customerAddress,
-        email: customerEmail,
-        phoneNumber: customerPhoneno,
-      });
+      const response = await axios.post("http://localhost:5001/client/addcustomer", formData);
       if (response.status === 201) {
         // Show success message
         alert("Customer added successfully!");
@@ -76,37 +78,42 @@ const AddCustomer = () => {
             }}
           >
             <TextField
+              name="customerId"
               label="Customer ID"
-              value={customerId}
-              onChange={(e) => setCustomerId(e.target.value)}
+              value={formData.customerId}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
+              name="customerName"
               label="Customer Name"
-              value={customerName}
-              onChange={(e) => setCustomerName(e.target.value)}
+              value={formData.customerName}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
+              name="customerAddress"
               label="Customer Address"
-              value={customerAddress}
-              onChange={(e) => setCustomerAddress(e.target.value)}
+              value={formData.customerAddress}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
+              name="customerEmail"
               label="Customer Email"
-              value={customerEmail}
-              onChange={(e) => setCustomerEmail(e.target.value)}
+              value={formData.customerEmail}
+              onChange={handleChange}
               fullWidth
               required
             />
             <TextField
+              name="customerPhoneno"
               label="Customer Phone Number"
-              value={customerPhoneno}
-              onChange={(e) => setCustomerPhoneno(e.target.value)}
+              value={formData.customerPhoneno}
+              onChange={handleChange}
               fullWidth
               required
             />

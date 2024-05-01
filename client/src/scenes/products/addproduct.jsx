@@ -3,7 +3,6 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import toast from 'react-hot-toast';
 import axios from "axios";
 
 const AddProduct = () => {
@@ -18,7 +17,6 @@ const AddProduct = () => {
     productPrice: "",
     
     category: "",
-    rating: "",
     
     quantity: ""
   });
@@ -38,13 +36,13 @@ const AddProduct = () => {
 
       if (response.status === 201) {
         // Show success message
-        toast.success("Product added successfully!");
+        alert("Product added successfully!");
         // Redirect to products page
         navigate("/products");
       }
     } catch (error) {
       // Show error message
-      toast.error("An error occurred while adding the product. Please try again.");
+      alert("An error occurred while adding the product. Please try again.");
     }
   };
 
@@ -119,14 +117,7 @@ const AddProduct = () => {
               fullWidth
               
             />
-            <TextField
-              name="rating"
-              label="Rating"
-              type="number"
-              value={formData.rating}
-              onChange={handleChange}
-              fullWidth
-            />
+            
             
             <TextField
               name="quantity"

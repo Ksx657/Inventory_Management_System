@@ -99,7 +99,7 @@ const AddTransaction = () => {
             <TextField
               name="createdAt"
               label="Created At"
-              type="datetime-local"
+              type="date"
               value={formData.createdAt}
               onChange={handleChange}
               fullWidth

@@ -5,6 +5,7 @@ import User from "../models/userSchema.js";
 import Transaction from "../models/Transaction.js";
 import getCountryIso3 from "country-iso-2-to-3";
 import Customer from "../models/customers.js";
+import asyncHandler from 'express-async-handler';
 
 export const getProducts = async (req, res) => {
   try {
@@ -38,14 +39,13 @@ export const getCustomers = async (req, res) => {
 };
 
 export const addCustomer = async (req, res) => {
-  const customerData = req.body;
-
   try {
-    const newCustomer = new Customer(customerData);
-    await newCustomer.save();
-    res.status(201).json(newCustomer);
+    const { customerId, name, address,email,phoneNumber } = req.body;
+    const customer = new Customer({ customerId, name, address,email,phoneNumber });
+    await customer.save();
+    res.status(201).json({ message: 'Product added successfully' });
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    res.status(500).json({ message: error.message });
   }
 };
 
@@ -63,6 +63,24 @@ export const updateCustomer = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+
+export const getcustomerById = asyncHandler(async (req, res) => {
+  const customerId = req.params.id; // Get ID from the URL parameter
+
+  if (!isValidObjectId(customerId)) {
+    return res.status(400).json({ success: false, message: "Invalid product ID" });
+  }
+
+  const customer = await Customer.findById(customerId);
+
+  if (!customer) {
+    return res.status(404).json({ success: false, message: "customer not found" });
+  }
+
+  res.status(200).json({ success: true, data: customer });
+});
+
 
 export const getTransactions = async (req, res) => {
   try {
@@ -111,6 +129,7 @@ export const addTransaction = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
 
 export const getGeography = async (req, res) => {
   try {

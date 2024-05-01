@@ -10,12 +10,10 @@ import {
   Paper,
   Button,
   Typography,
-  
 } from "@mui/material";
-import Header from "../../components/Header";
-import { useNavigate, Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import Header from "../../components/Header";
 
 const EditDeleteProduct = ({ productId, onDelete }) => {
   const handleDelete = async () => {
@@ -23,11 +21,10 @@ const EditDeleteProduct = ({ productId, onDelete }) => {
       const response = await axios.delete(`http://localhost:5001/products/${productId}`);
       if (response.status === 200) {
         // Product deleted successfully
-        onDelete(productId);
+        onDelete(productId); // Trigger the parent to refresh
       }
     } catch (error) {
       console.error("Error deleting product:", error);
-      // Handle error gracefully, e.g., display error message in UI
       alert("An error occurred while deleting the product. Please try again.");
     }
   };
@@ -45,9 +42,6 @@ const EditDeleteProduct = ({ productId, onDelete }) => {
     </>
   );
 };
-
-
-
 
 const Products = () => {
   const navigate = useNavigate();
@@ -68,6 +62,11 @@ const Products = () => {
 
     fetchProducts();
   }, []);
+
+  const handleDelete = (deletedProductId) => {
+    // Update the product list by removing the deleted product
+    setProducts((prevProducts) => prevProducts.filter((product) => product._id !== deletedProductId));
+  };
 
   return (
     <Box m="1.5rem 2.5rem">
@@ -103,7 +102,6 @@ const Products = () => {
                 <TableCell>Name</TableCell>
                 <TableCell align="right">Category</TableCell>
                 <TableCell align="right">Price(Rs.)</TableCell>
-                <TableCell align="right">Rating</TableCell>
                 <TableCell align="right">Quantity(KG)</TableCell>
                 <TableCell align="right">Actions</TableCell>
               </TableRow>
@@ -119,10 +117,12 @@ const Products = () => {
                   </TableCell>
                   <TableCell align="right">{product.category}</TableCell>
                   <TableCell align="right">{product.productPrice}</TableCell>
-                  <TableCell align="right">{product.rating}</TableCell>
                   <TableCell align="right">{product.quantity}</TableCell>
                   <TableCell align="right">
-                  <EditDeleteProduct productId={product._id} />
+                    <EditDeleteProduct
+                      productId={product._id}
+                      onDelete={handleDelete} // Pass the onDelete handler
+                    />
                   </TableCell>
                 </TableRow>
               ))}

@@ -16,18 +16,19 @@ const UpdateProduct = () => {
     price: "",
     quantity: "",
     rating: "",
+    category:"",
   });
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
         const response = await axios.get(`http://localhost:5001/products/${productId}`);
-        const { productPrice, quantity, rating } = response.data.data;
+        const { productPrice, quantity,category } = response.data.data;
         setProductData({
           productId,
           price: productPrice,
           quantity,
-          rating,
+          category
         });
       } catch (error) {
         console.error("Error fetching product:", error);
@@ -44,7 +45,7 @@ const UpdateProduct = () => {
       const response = await axios.put(`http://localhost:5001/products/${productId}`, {
         price: productData.price,
         quantity: productData.quantity,
-        rating: productData.rating,
+        category:productData.category
       });
       if (response.status === 200) {
         // Show success message
@@ -128,11 +129,12 @@ const UpdateProduct = () => {
               fullWidth
               required
             />
+            
             <TextField
-              label="Rating"
-              type="number"
-              name="rating"
-              value={productData.rating}
+              label="Category"
+              type="text"
+              name="category"
+              value={productData.category}
               onChange={handleChange}
               fullWidth
               required

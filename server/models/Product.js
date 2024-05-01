@@ -9,7 +9,7 @@ const productSchema = new mongoose.Schema({
   productPrice: { type: Number, required: true }, // Equivalent to `productPrice`
   
   category: { type: String}, // New field for product category
-  rating: { type: Number, default: 0 }, // New field for product rating, default to 0
+  
   
   quantity: { type: Number, default: 0 }, // Existing field for quantity, with default value
 }, { timestamps: true }); // Optionally include timestamps to track creation and update times

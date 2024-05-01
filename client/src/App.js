@@ -9,7 +9,7 @@ import Dashboard from "./scenes/dashboard";
 import Products from "./scenes/products";
 import Customers from "./scenes/customers";
 import Transactions from "./scenes/transactions";
-import TaskManager from "./scenes/geography";
+
 import Overview from "./scenes/overview";
 import Daily from "./scenes/daily";
 import Monthly from "./scenes//monthly";
@@ -24,6 +24,8 @@ import AddProduct from "./scenes/products/addproduct";
 import AddCustomer from "./scenes/customers/addcustomer";
 import AddTransaction from "./scenes/transactions/addtransaction";
 import UpdateProduct from "./scenes/products/updateproduct";
+import UpdateCustomer from "./scenes/customers/updatecustomers";
+import TaskList from "./scenes/task/TaskList"
 
 
 
@@ -48,16 +50,19 @@ function App() {
               <Route path="/products" element={<Products />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/transactions" element={<Transactions />} />
-              <Route path="/tasks" element={<TaskManager />} />
+              
               <Route path="/overview" element={<Overview />} />
               <Route path="/daily" element={<Daily />} />
               <Route path="/monthly" element={<Monthly />} />
               <Route path="/breakdown" element={<Breakdown />} />
               <Route path="/admin" element={<Admin />} />
               <Route path="/addproduct" element={<AddProduct />} />
-              <Route path="/addcustomer" element={<AddCustomer />} />
-              <Route path="/addtransaction" element={<AddTransaction />} />
               <Route path="/updateproduct/:productId" element={<UpdateProduct />} />
+              <Route path="/addcustomer" element={<AddCustomer />} />
+              <Route path="/updatecustomer/:customerId" element={<UpdateCustomer/>}/>
+              <Route path="/addtransaction" element={<AddTransaction />} />
+              <Route path="/task" element={<TaskList/>}/>
+           
               
             </Route>
           </Routes>

@@ -5,8 +5,8 @@ import { isValidObjectId } from 'mongoose'; // For ID validation
 
 export const addProduct = async (req, res) => {
   try {
-    const { productId, productName, productPrice } = req.body;
-    const product = new Product({ productId, productName, productPrice });
+    const { productId, productName, productPrice,category,rating,quantity } = req.body;
+    const product = new Product({ productId, productName, productPrice,category,rating,quantity });
     await product.save();
     res.status(201).json({ message: 'Product added successfully' });
   } catch (error) {
@@ -56,7 +56,8 @@ export const updateProduct = asyncHandler(async (req, res) => {
   const productUpdates = {
     price: req.body.price,
     quantity: req.body.quantity,
-    rating: req.body.rating
+    rating: req.body.rating,
+    category:req.body.category
   };
 
   const updatedProduct = await Product.findByIdAndUpdate(

@@ -26,7 +26,7 @@ export const addTransaction = async (req, res) => {
 export const getTransactionById = asyncHandler(async (req, res) => {
   const transId = req.params.id; // Get ID from the URL parameter
 
-  if (!isValidObjectId(productId)) {
+  if (!isValidObjectId(transId)) {
     return res.status(400).json({ success: false, message: "Invalid product ID" });
   }
 
@@ -37,4 +37,20 @@ export const getTransactionById = asyncHandler(async (req, res) => {
   }
 
   res.status(200).json({ success: true, data: transaction });
+});
+
+export const deleteTransaction = asyncHandler(async (req, res) => {
+  const transId = req.params.id; // Get ID from the URL parameter
+
+  if (!isValidObjectId(transId)) {
+    return res.status(400).json({ success: false, message: "Invalid product ID" });
+  }
+
+  const transaction = await Transaction.findByIdAndDelete(transId);
+
+  if (!transaction) {
+    return res.status(404).json({ success: false, message: "Transaction not found" });
+  }
+
+  res.status(200).json({ success: true, message: "Transaction deleted successfully", data: transaction });
 });

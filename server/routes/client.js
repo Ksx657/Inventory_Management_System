@@ -7,7 +7,8 @@ import {
   addTransaction, 
   getTransactions,
   updateCustomer,
-  addCustomer
+  addCustomer,
+  getcustomerById
 } from "../controllers/client.js";
 
 
@@ -16,8 +17,9 @@ const router = express.Router();
 
 router.get("/products", getProducts);
 router.get("/customers", getCustomers);
-router.post("/addCustomer",addCustomer);
-router.put("/updateCustomer",updateCustomer);
+router.post("/addcustomer",addCustomer);
+router.put("/updatecustomer",updateCustomer);
+router.get("/customer/:id",getcustomerById);
 router.get("/gettransactions", getTransactions);
 router.post("/addTransaction", addTransaction);
 router.get("/geography", getGeography);

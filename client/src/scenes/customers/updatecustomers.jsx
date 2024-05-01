@@ -25,6 +25,7 @@ const UpdateCustomer = () => {
         const response = await axios.get(`http://localhost:5001/customers/${customerId}`);
         const { name, address, email, phoneNumber } = response.data.data;
         setCustomerData({
+      
           customerId,
           name,
           address,
@@ -36,7 +37,7 @@ const UpdateCustomer = () => {
         // Handle error gracefully, e.g., display error message in UI
       }
     };
-
+  
     fetchCustomer();
   }, [customerId]);
 
@@ -105,6 +106,7 @@ const UpdateCustomer = () => {
               gap: "2rem",
             }}
           >
+            {/* Populate form fields with existing data */}
             <TextField
               label="Customer ID"
               type="text"
