@@ -1,7 +1,7 @@
-const Task = require("./taskController");
+import Task from "../models/taskModel.js";
 
 // Create a Task
-const createTask = async (req, res) => {
+export const createTask = async (req, res) => {
     try { 
         const task = await Task.create(req.body);
         res.status(200).json(task);
@@ -13,7 +13,7 @@ const createTask = async (req, res) => {
 };
 
 //get all Tasks
-const getTasks = async (req, res) => {
+export const getTasks = async (req, res) => {
     try{
         const tasks = await Task.find();
         res.status(200).json(tasks);
@@ -26,7 +26,7 @@ const getTasks = async (req, res) => {
 };
 
 //get a single task
-const getTask = async (req, res) => {
+export const getTask = async (req, res) => {
     
     try{
         const {id} = req.params
@@ -42,7 +42,7 @@ const getTask = async (req, res) => {
 };    
 
 //Delete task
-const deleteTask = async (req, res) => {
+export const deleteTask = async (req, res) => {
     try{
        const {id} = req.params;
        const task = await Task.findByIdAndDelete(id);
@@ -60,7 +60,7 @@ const deleteTask = async (req, res) => {
 };
 
 // Update a Task
-const updateTask = async (req, res) => {
+export const updateTask = async (req, res) => {
     try{
         const { id } = req.params
         const task = await Task.findByIdUpdate(
@@ -79,13 +79,4 @@ const updateTask = async (req, res) => {
         res.status(500).json({msg: error.message});
 
     }
-};
-
-module.exports = {
-    createTask,
-    getTasks,
-    getTask,
-    deleteTask,
-    updateTask,
-
 };

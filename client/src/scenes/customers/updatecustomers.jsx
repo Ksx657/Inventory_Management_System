@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import Swal from "sweetalert2";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
@@ -22,10 +23,9 @@ const UpdateCustomer = () => {
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
-        const response = await axios.get(`http://localhost:5001/customers/${customerId}`);
+        const response = await axios.get(`http://localhost:5001/client/customer/${customerId}`);
         const { name, address, email, phoneNumber } = response.data.data;
         setCustomerData({
-      
           customerId,
           name,
           address,
@@ -34,7 +34,6 @@ const UpdateCustomer = () => {
         });
       } catch (error) {
         console.error("Error fetching customer:", error);
-        // Handle error gracefully, e.g., display error message in UI
       }
     };
   
@@ -44,21 +43,31 @@ const UpdateCustomer = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.put(`http://localhost:5001/customers/${customerId}`, {
+      const response = await axios.put(`http://localhost:5001/client/updatecustomer/${customerId}`, {
         name: customerData.name,
         address: customerData.address,
         email: customerData.email,
         phoneNumber: customerData.phoneNumber,
       });
       if (response.status === 200) {
-        // Show success message
-        alert("Customer details updated successfully!");
-        // Redirect to customers page or wherever appropriate
-        navigate("/customers");
+        Swal.fire({
+          title: "Success!",
+          text: "Customer updated successfully!",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/customers"); 
+        });
       }
     } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "An error occurred while adding the customer. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
       console.error("Error updating customer details:", error);
-      // Handle error gracefully, e.g., display error message in UI
+      
     }
   };
 

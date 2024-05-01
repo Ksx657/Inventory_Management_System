@@ -8,7 +8,8 @@ import {
   getTransactions,
   updateCustomer,
   addCustomer,
-  getcustomerById
+  getcustomerById,
+  deleteCustomer
 } from "../controllers/client.js";
 
 
@@ -18,7 +19,8 @@ const router = express.Router();
 router.get("/products", getProducts);
 router.get("/customers", getCustomers);
 router.post("/addcustomer",addCustomer);
-router.put("/updatecustomer",updateCustomer);
+router.put("/updatecustomer/:id",updateCustomer);
+router.delete("/deleteCustomer/:id",deleteCustomer)
 router.get("/customer/:id",getcustomerById);
 router.get("/gettransactions", getTransactions);
 router.post("/addTransaction", addTransaction);

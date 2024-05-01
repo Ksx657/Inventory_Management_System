@@ -33,7 +33,7 @@ const handleInputChange=(e)=>{
 const getTasks=async()=>{
   setIsLoading(true)
   try {
-    const {data}=await axios.get(`${URL}api/tasks`)
+    const {data}=await axios.get(`http://localhost:5001/tasks/tasks`)
    setTasks(data)
     setIsLoading(false);
   } catch (error) {
@@ -70,7 +70,7 @@ const createTask = async (e) => {
 
      const deleteTask= async (id)=>{
      try {
-      await axios.delete(`${URL}api/tasks/${id}`)
+      await axios.delete(`http://localhost:5001/tasks/${id}`)
       getTasks()
      } catch (error) {
       toast.error(error.message)
@@ -97,7 +97,7 @@ const updateTask= async(e)=>{
     return toast.error("Input field cannot be empty.")
   }
   try {
-    await axios.put(`${URL}api/tasks/${taskID}`, formData)
+    await axios.put(`http://localhost:5001/tasks/${taskID}`, formData)
     setFormData({...formData,name:""})
     setIsEditing(false)
     getTasks()
@@ -114,7 +114,7 @@ const setToComplete = async (task)=>{
   }
 
    try {
-    await axios.put(`${URL}api/tasks/${task._id}`,newFormData)
+    await axios.put(`http://localhost:5001/tasks/${task._id}`,newFormData)
     getTasks()
    } catch (error) {
     toast.error(error.message)

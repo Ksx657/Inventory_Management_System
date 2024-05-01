@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import Swal from "sweetalert2";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
@@ -10,12 +13,12 @@ const AddCustomer = () => {
   const isMatch = useMediaQuery(theme.breakpoints.down("md"));
   const navigate = useNavigate();
 
-  const [formData,setFormData]=useState({
-    customerId:"",
-    customerName:"",
-    customerAddress:"",
-    customerEmail:"",
-    customerPhoneno:""
+  const [formData, setFormData] = useState({
+    customerId: "",
+    name: "",
+    address: "",
+    email: "",
+    phoneNumber: "",
   });
   const handleChange = (e) => {
     setFormData({
@@ -27,19 +30,34 @@ const AddCustomer = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:5001/client/addcustomer", formData);
+      const response = await axios.post(
+        "http://localhost:5001/client/addCustomer",
+        formData
+      );
       if (response.status === 201) {
-        // Show success message
-        alert("Customer added successfully!");
-        // Redirect to customers page
-        navigate("/customers");
+        // Show success message using SweetAlert2
+        Swal.fire({
+          title: "Success!",
+          text: "Customer added successfully!",
+          icon: "success",
+          confirmButtonText: "OK",
+        }).then(() => {
+          navigate("/customers"); // Redirect after closing the alert
+        });
       }
     } catch (error) {
       console.error("Error adding customer:", error);
-      // Handle error gracefully, e.g., display error message in UI
-      alert("An error occurred while adding the customer. Please try again.");
+  
+      // Handle error using SweetAlert2
+      Swal.fire({
+        title: "Error",
+        text: "An error occurred while adding the customer. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
     }
   };
+  
 
   return (
     <Container
@@ -63,7 +81,7 @@ const AddCustomer = () => {
           variant="h3"
           sx={{
             textAlign: "center",
-            color:theme.palette.secondary.light,
+            color: theme.palette.secondary.light,
             marginBottom: "2rem",
           }}
         >
@@ -73,7 +91,9 @@ const AddCustomer = () => {
           <Box
             sx={{
               display: "grid",
-              gridTemplateColumns: isMatch ? "repeat(1, 1fr)" : "repeat(2, 1fr)",
+              gridTemplateColumns: isMatch
+                ? "repeat(1, 1fr)"
+                : "repeat(2, 1fr)",
               gap: "2rem",
             }}
           >
@@ -81,39 +101,39 @@ const AddCustomer = () => {
               name="customerId"
               label="Customer ID"
               value={formData.customerId}
-              onChange={handleChange}
+              onChange={handleChange} 
               fullWidth
               required
             />
             <TextField
-              name="customerName"
+              name="name" 
               label="Customer Name"
-              value={formData.customerName}
-              onChange={handleChange}
+              value={formData.name}
+              onChange={handleChange} 
               fullWidth
               required
             />
             <TextField
-              name="customerAddress"
+              name="address" 
               label="Customer Address"
-              value={formData.customerAddress}
-              onChange={handleChange}
+              value={formData.address}
+              onChange={handleChange} 
               fullWidth
               required
             />
             <TextField
-              name="customerEmail"
+              name="email" 
               label="Customer Email"
-              value={formData.customerEmail}
-              onChange={handleChange}
+              value={formData.email}
+              onChange={handleChange} 
               fullWidth
               required
             />
             <TextField
-              name="customerPhoneno"
+              name="phoneNumber" 
               label="Customer Phone Number"
-              value={formData.customerPhoneno}
-              onChange={handleChange}
+              value={formData.phoneNumber}
+              onChange={handleChange} 
               fullWidth
               required
             />

@@ -4,8 +4,10 @@ import ProductStat from "../models/ProductStat.js";
 import User from "../models/userSchema.js";
 import Transaction from "../models/Transaction.js";
 import getCountryIso3 from "country-iso-2-to-3";
+import mongoose from 'mongoose';
 import Customer from "../models/customers.js";
 import asyncHandler from 'express-async-handler';
+import { isValidObjectId } from 'mongoose';
 
 export const getProducts = async (req, res) => {
   try {
@@ -50,17 +52,50 @@ export const addCustomer = async (req, res) => {
 };
 
 export const updateCustomer = async (req, res) => {
-  const { customerId } = req.params;
+  // Extracting the MongoDB document ID from request parameters
+  const { id } = req.params;
+
+  // Data from the request body to update the customer
   const customerData = req.body;
 
   try {
-    const updatedCustomer = await Customer.findByIdAndUpdate(customerId, customerData, { new: true });
-    if (!updatedCustomer) {
-      return res.status(404).json({ message: 'Customer not found' });
+    // Validate the MongoDB document ID
+    if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).json({ message: "Invalid MongoDB document ID" });
     }
+
+    // Find the customer by ID and update with new data
+    const updatedCustomer = await Customer.findByIdAndUpdate(id, customerData, { new: true });
+
+    // If the customer is not found, return a 404 status
+    if (!updatedCustomer) {
+      return res.status(404).json({ message: "Customer not found" });
+    }
+
+    // Return the updated customer data if successful
     res.status(200).json(updatedCustomer);
+
   } catch (error) {
-    res.status(400).json({ message: error.message });
+    // Handle unexpected errors with a 500 status
+    console.error("Error updating customer:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+};
+
+export const deleteCustomer = async (req, res) => {
+  try{
+     const {id} = req.params;
+     const customer = await Customer.findByIdAndDelete(id);
+     if (!customer) {
+      return res.status(404).json('No Customer with id: ${id}');
+  }
+  res.status(200).jason(customer);   
+  
+
+    res.status(200).send("Custoemr deleted");
+  } catch (error) {
+     res.status(500).json({msg: error.message});
+
   }
 };
 

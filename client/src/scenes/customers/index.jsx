@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import Swal from "sweetalert2";
 import axios from 'axios';
 import Header from "../../components/Header";
 import { Link } from "react-router-dom";
@@ -19,15 +20,24 @@ import {
 const EditDeleteCustomer = ({ customerId, onDelete }) => {
   const handleDelete = async () => {
     try {
-      const response = await axios.delete(`http://localhost:5001/client/customers/${customerId}`);
+      const response = await axios.delete(`http://localhost:5001/client/deleteCustomer/${customerId}`);
       if (response.status === 200) {
-        // Customer deleted successfully
+        Swal.fire({
+          title: "Success!",
+          text: "Customer deleted successfully!",
+          icon: "success",
+          confirmButtonText: "OK",
+        })
         onDelete(customerId);
       }
     } catch (error) {
+      Swal.fire({
+        title: "Error",
+        text: "An error occurred while adding the customer. Please try again.",
+        icon: "error",
+        confirmButtonText: "OK",
+      });
       console.error("Error deleting customer:", error);
-      // Handle error gracefully, e.g., display error message in UI
-      alert("An error occurred while deleting the customer. Please try again.");
     }
   };
 
