@@ -11,6 +11,7 @@ import {
   Button,
   Typography,
 } from "@mui/material";
+import Swal from "sweetalert2";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Header from "../../components/Header";
@@ -20,6 +21,12 @@ const EditDeleteProduct = ({ productId, onDelete }) => {
     try {
       const response = await axios.delete(`http://localhost:5001/products/${productId}`);
       if (response.status === 200) {
+        Swal.fire({
+          title: "Success!",
+          text: "Product deleted successfully!",
+          icon: "success",
+          confirmButtonText: "OK",
+        })
         // Product deleted successfully
         onDelete(productId); // Trigger the parent to refresh
       }

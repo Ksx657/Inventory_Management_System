@@ -61,22 +61,19 @@ export const deleteTask = async (req, res) => {
 
 // Update a Task
 export const updateTask = async (req, res) => {
-    try{
-        const { id } = req.params
-        const task = await Task.findByIdUpdate(
-           {_id: id}, req.body, {
-          new: true,
-          runValidators: true, 
-        
-        }
-        );
-        if (!task) {
-            return res.status(404).json('No task with id: ${id}');
-        }
-
-        res.status(200).json(task)
+    try {
+      const { id } = req.params;
+      const updatedTask = await Task.findByIdAndUpdate(
+        id,
+        { completed: !req.body.completed }, // Toggle completion status
+        { new: true }
+      );
+      if (!updatedTask) {
+        return res.status(404).json({ message: `No task with id: ${id}` });
+      }
+      res.status(200).json(updatedTask);
     } catch (error) {
-        res.status(500).json({msg: error.message});
-
+      res.status(500).json({ msg: error.message });
     }
-};
+  };
+  

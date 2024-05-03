@@ -43,10 +43,11 @@ function App() {
               <Route path="/home" element={<Home />} />
               <Route path="/login" element={<Login/>}/>
               <Route path="/register" element={<Register/>}/>
+              <Route path="/dashboard" element={<Dashboard />} />
             </Route>
             <Route element={<Layout />}>
               <Route path="/" element={<Navigate to="/dashboard" replace />} />
-              <Route path="/dashboard" element={<Dashboard />} />
+              
               <Route path="/products" element={<Products />} />
               <Route path="/customers" element={<Customers />} />
               <Route path="/transactions" element={<Transactions />} />

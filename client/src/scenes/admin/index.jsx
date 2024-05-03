@@ -1,98 +1,73 @@
-import React from "react";
-import { Box, useTheme } from "@mui/material";
-import { useGetAdminsQuery } from "../../state/api.js";
-import { DataGrid } from "@mui/x-data-grid";
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import Header from "../../components/Header";
-import CustomColumnMenu from "../../components/DataGridCustomColumnMenu";
+import {
+  Box,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+  Typography,
+} from "@mui/material";
 
-const Admin = () => {
-  const theme = useTheme();
-  const { data, isLoading } = useGetAdminsQuery();
+const Users = () => {
+  const [users, setUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const columns = [
-    {
-      field: "_id",
-      headerName: "ID",
-      flex: 1,
-    },
-    {
-      field: "name",
-      headerName: "Name",
-      flex: 0.5,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-    },
-    {
-      field: "phoneNumber",
-      headerName: "Phone Number",
-      flex: 0.5,
-      renderCell: (params) => {
-        return params.value.replace(/^(\d{3})(\d{3})(\d{4})/, "($1)$2-$3");
-      },
-    },
-    {
-      field: "country",
-      headerName: "Country",
-      flex: 0.4,
-    },
-    {
-      field: "occupation",
-      headerName: "Occupation",
-      flex: 1,
-    },
-    {
-      field: "role",
-      headerName: "Role",
-      flex: 0.5,
-    },
-  ];
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const response = await axios.get('http://localhost:5001/users/authors'); // Fetch all users, not just authors
+        setUsers(response.data.users || []); // Update state with users data or an empty array if undefined
+        setIsLoading(false); // Data has been loaded
+      } catch (error) {
+        console.error("Error fetching users:", error);
+        setIsLoading(false);
+      }
+    };
+
+    fetchUsers();
+  }, []);
 
   return (
     <Box m="1.5rem 2.5rem">
-      <Header title="ADMINS" subtitle="Managing admins and list of admins" />
-      <Box
-        mt="40px"
-        height="75vh"
-        sx={{
-          "& .MuiDataGrid-root": {
-            border: "none",
-          },
-          "& .MuiDataGrid-cell": {
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-columnHeaders": {
-            backgroundColor: theme.palette.background.alt,
-            color: theme.palette.secondary[100],
-            borderBottom: "none",
-          },
-          "& .MuiDataGrid-virtualScroller": {
-            backgroundColor: theme.palette.primary.light,
-          },
-          "& .MuiDataGrid-footerContainer": {
-            backgroundColor: theme.palette.background.alt,
-            color: theme.palette.secondary[100],
-            borderTop: "none",
-          },
-          "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
-            color: `${theme.palette.secondary[200]} !important`,
-          },
-        }}
-      >
-        <DataGrid
-          loading={isLoading || !data}
-          getRowId={(row) => row._id}
-          rows={data || []}
-          columns={columns}
-          components={{
-            ColumnMenu: CustomColumnMenu,
-          }}
-        />
-      </Box>
+      <Header title="Users" subtitle="List of Users" />
+
+      {isLoading ? (
+        <Typography>Loading...</Typography>
+      ) : users.length > 0 ? (
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table">
+            <TableHead>
+              <TableRow>
+                <TableCell>ID</TableCell>
+                <TableCell align="right">Name</TableCell>
+                <TableCell align="right">Role</TableCell>
+                <TableCell align="right">Email</TableCell>
+                <TableCell align="right">Phone Number</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users.map((user) => (
+                <TableRow key={user._id}>
+                  <TableCell>{user._id}</TableCell>
+                  <TableCell align="right">{user.name}</TableCell>
+                  <TableCell align="right">{user.role}</TableCell>
+                  <TableCell align="right">{user.email}</TableCell>
+                  <TableCell align="right">{user.phone}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      ) : (
+        <Typography>No users found.</Typography>
+      )}
     </Box>
   );
 };
 
-export default Admin;
+export default Users;

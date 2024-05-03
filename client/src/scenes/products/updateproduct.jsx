@@ -4,6 +4,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const UpdateProduct = () => {
   const theme = useTheme();
@@ -48,8 +49,12 @@ const UpdateProduct = () => {
         category:productData.category
       });
       if (response.status === 200) {
-        // Show success message
-        alert("Product updated successfully!");
+        Swal.fire({
+          title: "Success!",
+          text: "Product updated successfully!",
+          icon: "success",
+          confirmButtonText: "OK",
+        })
         // Redirect to products page
         navigate("/products");
       }

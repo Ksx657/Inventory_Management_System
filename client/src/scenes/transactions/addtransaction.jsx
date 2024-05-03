@@ -5,6 +5,7 @@ import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import toast from 'react-hot-toast';
 import axios from "axios";
+import Swal from "sweetalert2";
 
 const AddTransaction = () => {
   const theme = useTheme();
@@ -33,8 +34,12 @@ const AddTransaction = () => {
       const response = await axios.post("http://localhost:5001/transactions/addtransactions", formData);
 
       if (response.status === 201) {
-        // Show success message
-        toast.success("Transaction added successfully!");
+        Swal.fire({
+          title: "Success!",
+          text: "Product updated successfully!",
+          icon: "success",
+          confirmButtonText: "OK",
+        })
         // Redirect to transactions page
         navigate("/transactions");
       }

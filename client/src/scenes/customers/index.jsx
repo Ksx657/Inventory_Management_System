@@ -28,15 +28,10 @@ const EditDeleteCustomer = ({ customerId, onDelete }) => {
           icon: "success",
           confirmButtonText: "OK",
         })
-        onDelete(customerId);
+        onDelete(customerId); // Call the onDelete function
       }
     } catch (error) {
-      Swal.fire({
-        title: "Error",
-        text: "An error occurred while adding the customer. Please try again.",
-        icon: "error",
-        confirmButtonText: "OK",
-      });
+      
       console.error("Error deleting customer:", error);
     }
   };
@@ -57,9 +52,8 @@ const EditDeleteCustomer = ({ customerId, onDelete }) => {
 
 
 const Customers = () => {
-  const [customers, setCustomers] = useState();
+  const [customers, setCustomers] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-
 
   useEffect(() => {
     const fetchCustomers = async () => {
@@ -68,7 +62,7 @@ const Customers = () => {
         setCustomers(response.data);
         setIsLoading(false);
       } catch (error) {
-        console.error("Error fetching products:", error);
+        console.error("Error fetching customers:", error);
         setIsLoading(false);
       }
     };
@@ -77,15 +71,13 @@ const Customers = () => {
   }, []);
 
   const handleDelete = (deletedCustomerId) => {
-    // Update the product list by removing the deleted product
+    // Update the customer list by removing the deleted customer
     setCustomers((prevCustomers) => prevCustomers.filter((customer) => customer._id !== deletedCustomerId));
   };
-
 
   return (
     <Box m="1.5rem 2.5rem">
       <Header title="CUSTOMERS" subtitle="List of Customers" />
-
 
       <Link to="/addcustomer">
         <Button
@@ -119,7 +111,7 @@ const Customers = () => {
                 <TableCell align="right">Address</TableCell>
                 <TableCell align="right">Email</TableCell>
                 <TableCell align="right">Phone Number</TableCell>
-                <TableCell align="right">Actions</TableCell> {/* Moved the Actions column */}
+                <TableCell align="right">Actions</TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -131,8 +123,7 @@ const Customers = () => {
                   <TableCell align="right">{customer.email}</TableCell>
                   <TableCell align="right">{customer.phoneNumber}</TableCell>
                   <TableCell align="right">
-                    <EditDeleteCustomer customerId={customer._id}
-                    onDelete={handleDelete} />
+                    <EditDeleteCustomer customerId={customer._id} onDelete={handleDelete} />
                   </TableCell>
                 </TableRow>
               ))}

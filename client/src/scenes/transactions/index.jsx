@@ -15,31 +15,7 @@ import Header from "../../components/Header";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
-const EditDeleteTransaction = ({ transId, onDelete }) => {
-  const handleDelete = async () => {
-    try {
-      const response = await axios.delete(`http://localhost:5001/transactions/${transId}`);
-      if (response.status === 200) {
-        // Transaction deleted successfully
-        onDelete(transId);
-      }
-    } catch (error) {
-      console.error("Error deleting transaction:", error);
-      // Handle error gracefully, e.g., display error message in UI
-      alert("An error occurred while deleting the transaction. Please try again.");
-    }
-  };
 
-  return (
-    <>
-      
-
-      <Button variant="contained" color="secondary" onClick={handleDelete}>
-        Delete
-      </Button>
-    </>
-  );
-};
 
 const Transactions = () => {
   const [transactions, setTransactions] = useState([]);
@@ -60,12 +36,7 @@ const Transactions = () => {
     fetchTransactions();
   }, []);
 
-  const handleDeleteTransaction = (deletedTransactionId) => {
-    // Assuming you have transactions state and setTransactions function
-    setTransactions(prevTransactions =>
-      prevTransactions.filter(transaction => transaction._id !== deletedTransactionId)
-    );
-  };
+ 
   
 
   return (
@@ -104,7 +75,7 @@ const Transactions = () => {
                 <TableCell align="right">Created At</TableCell>
                 <TableCell align="right">Quantity</TableCell>
                 <TableCell align="right">Cost</TableCell>
-                <TableCell align="right">Actions</TableCell>
+                
               </TableRow>
             </TableHead>
             <TableBody>
@@ -115,12 +86,7 @@ const Transactions = () => {
                     <TableCell align="right">{transaction.createdAt}</TableCell>
                     <TableCell align="right">{transaction.quantity}</TableCell>
                     <TableCell align="right">{transaction.cost}</TableCell>
-                    <TableCell align="right">
-                      <EditDeleteTransaction
-                        transactionId={transaction.transId} 
-                        onDelete={handleDeleteTransaction}
-                      />
-                  </TableCell>
+                    
                 </TableRow>
               ))}
             </TableBody>

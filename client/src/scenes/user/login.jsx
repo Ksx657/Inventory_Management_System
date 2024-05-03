@@ -148,7 +148,7 @@ const Login = () => {
         >
           <Typography>
             Don't have an account?{" "}
-            <Link to="/register" sx={{ color: "theme.palette.primary.light", textDecoration: "none" }}>
+            <Link to="/register" sx={{ color: " theme.palette.secondary.main", textDecoration: "none" }}>
               Register here
             </Link>
           </Typography>

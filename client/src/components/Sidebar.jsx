@@ -1,4 +1,6 @@
-import React from "react";
+// Update the Sidebar component
+
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Divider,
@@ -13,7 +15,7 @@ import {
   useTheme,
 } from "@mui/material";
 import {
-  SettingsOutlined,
+  
   ChevronLeft,
   ChevronRightOutlined,
   HomeOutlined,
@@ -21,17 +23,14 @@ import {
   Groups2Outlined,
   ReceiptLongOutlined,
   AssignmentOutlined,
-  PointOfSaleOutlined,
-  TodayOutlined,
-  CalendarMonthOutlined,
+  
+  
+  
   AdminPanelSettingsOutlined,
- 
-  PieChartOutlined,
+  
 } from "@mui/icons-material";
-import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import FlexBetween from "./FlexBetween";
-import profileImage from "../assets/profile.jpg";
 
 const navItems = [
   {
@@ -54,27 +53,7 @@ const navItems = [
     text: "Transactions",
     icon: <ReceiptLongOutlined />,
   },
-  
-  {
-    text: "Sales",
-    icon: null,
-  },
-  {
-    text: "Overview",
-    icon: <PointOfSaleOutlined />,
-  },
-  {
-    text: "Daily",
-    icon: <TodayOutlined />,
-  },
-  {
-    text: "Monthly",
-    icon: <CalendarMonthOutlined />,
-  },
-  {
-    text: "Breakdown",
-    icon: <PieChartOutlined />,
-  },
+ 
   {
     text: "Management",
     icon: null,
@@ -86,6 +65,7 @@ const navItems = [
   {
     text: "Task Manager",
     icon: <AssignmentOutlined />,
+    link: "/task", // Add the link property for Task Manager
   },
 ];
 
@@ -104,6 +84,12 @@ const Sidebar = ({
   useEffect(() => {
     setActive(pathname.substring(1));
   }, [pathname]);
+
+  const handleItemClick = (link) => {
+    if (link) {
+      window.location.href = link; // Navigate to the specified link
+    }
+  };
 
   return (
     <Box component="nav">
@@ -140,7 +126,7 @@ const Sidebar = ({
               </FlexBetween>
             </Box>
             <List>
-              {navItems.map(({ text, icon }) => {
+              {navItems.map(({ text, icon, link }) => {
                 if (!icon) {
                   return (
                     <Typography key={text} sx={{ m: "2.25rem 0 1rem 3rem" }}>
@@ -156,6 +142,7 @@ const Sidebar = ({
                       onClick={() => {
                         navigate(`/${lcText}`);
                         setActive(lcText);
+                        handleItemClick(link); // Call handleItemClick with link
                       }}
                       sx={{
                         backgroundColor:
@@ -190,41 +177,7 @@ const Sidebar = ({
             </List>
           </Box>
 
-          <Box position="relative" bottom="2rem" top="1rem">
-            <Divider />
-            <FlexBetween textTransform="none" gap="1rem" m="1.5rem 2rem 0 3rem">
-              <Box
-                component="img"
-                alt="profile"
-                src={profileImage}
-                height="40px"
-                width="40px"
-                borderRadius="50%"
-                sx={{ objectFit: "cover" }}
-              />
-              <Box textAlign="left">
-                <Typography
-                  fontWeight="bold"
-                  fontSize="0.9rem"
-                  sx={{ color: theme.palette.secondary[100] }}
-                >
-                  {user.name}
-                </Typography>
-                <Typography
-                  fontSize="0.8rem"
-                  sx={{ color: theme.palette.secondary[200] }}
-                >
-                  {user.occupation}
-                </Typography>
-              </Box>
-              <SettingsOutlined
-                sx={{
-                  color: theme.palette.secondary[300],
-                  fontSize: "25px ",
-                }}
-              />
-            </FlexBetween>
-          </Box>
+        
         </Drawer>
       )}
     </Box>

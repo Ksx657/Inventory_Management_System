@@ -72,9 +72,9 @@ export const getMyProfile = catchAsyncErrors((req, res, next) => {
 });
 
 export const getAllAuthors = catchAsyncErrors(async (req, res, next) => {
-  const authors = await User.find({ role: "Author" });
+  const users = await User.find({});
   res.status(200).json({
     success: true,
-    authors,
+    users,
   });
 });

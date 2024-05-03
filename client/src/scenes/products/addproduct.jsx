@@ -3,6 +3,7 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Box, Button, Container, TextField, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import axios from "axios";
 
 const AddProduct = () => {
@@ -35,8 +36,12 @@ const AddProduct = () => {
       const response = await axios.post("http://localhost:5001/products/", formData);
 
       if (response.status === 201) {
-        // Show success message
-        alert("Product added successfully!");
+        Swal.fire({
+          title: "Success!",
+          text: "Product added successfully!",
+          icon: "success",
+          confirmButtonText: "OK",
+        })
         // Redirect to products page
         navigate("/products");
       }
